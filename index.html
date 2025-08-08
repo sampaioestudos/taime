@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#06b6d4" />
+    <title>taime</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="mask-icon" href="/mask-icon.svg" color="#06b6d4" />
+    <link rel="stylesheet" href="/src/index.css" />
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.13.0",
+    "recharts": "https://esm.sh/recharts@^3.1.2",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "vite": "https://esm.sh/vite@^7.1.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.0.0",
+    "papaparse": "https://esm.sh/papaparse@^5.5.3",
+    "buffer": "https://esm.sh/buffer@^6.0.3",
+    "@vercel/node": "https://esm.sh/@vercel/node@^5.3.11"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-900 text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
