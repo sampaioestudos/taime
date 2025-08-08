@@ -130,3 +130,8 @@ Log the time you track in taime directly to your Jira issues.
     *   Navigate to the "Settings" page in the app.
     *   Enter your Jira Domain, Jira Email, and the API Token you just created.
     *   Click "Save Jira Config" and "Test Connection".
+
+---
+
+## License
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
