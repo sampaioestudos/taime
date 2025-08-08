@@ -22,8 +22,8 @@ import { logWorkToJira } from '../services/jiraService';
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
 
 

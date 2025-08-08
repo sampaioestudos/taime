@@ -99,7 +99,7 @@ export const getTaskAnalysis = async (tasks: Task[], language: string): Promise<
       },
     });
 
-    const jsonText = response.text.trim();
+    const jsonText = (response.text || '').trim();
     const result = JSON.parse(jsonText);
     
     if (!result.categories || !result.insights) {
@@ -130,7 +130,7 @@ export const getRealtimeInsight = async (taskName: string, elapsedSeconds: numbe
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text.trim();
+        return (response.text || '').trim();
     } catch (error) {
         console.error("Error getting real-time insight:", error);
         return ""; // Return empty string on failure

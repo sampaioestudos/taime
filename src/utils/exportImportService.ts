@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { History, DailyRecord, Task } from '../types';
+import { History, DailyRecord } from '../types';
 
 const downloadFile = (content: string, fileName: string, contentType: string) => {
     const a = document.createElement('a');
