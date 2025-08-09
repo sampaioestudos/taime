@@ -130,6 +130,12 @@ const SettingsPage: React.FC = () => {
   const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
     <input {...props} className="w-full bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors" />
   );
+  
+  const baseButtonClasses = "px-5 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors";
+  const primaryButtonClasses = `${baseButtonClasses} bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-500`;
+  const secondaryButtonClasses = `${baseButtonClasses} bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500`;
+  const destructiveButtonClasses = `${baseButtonClasses} bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-500`;
+
 
   return (
     <div>
@@ -173,14 +179,14 @@ const SettingsPage: React.FC = () => {
                         checked={insightsEnabled}
                         onChange={() => setInsightsEnabled(!insightsEnabled)}
                     />
-                    <div className={`block w-14 h-8 rounded-full transition-colors ${insightsEnabled ? 'bg-cyan-600' : 'bg-slate-700'}`}></div>
+                    <div className={`block w-14 h-8 rounded-full transition-colors ${insightsEnabled ? 'bg-cyan-600' : 'bg-slate-700 border border-slate-600'}`}></div>
                     <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${insightsEnabled ? 'translate-x-6' : ''}`}></div>
                 </div>
             </label>
             </Card>
              <button
                 type="submit"
-                className="px-5 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-lg hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className={primaryButtonClasses}
               >
                 {t('saveSettings')}
               </button>
@@ -205,7 +211,7 @@ const SettingsPage: React.FC = () => {
                 ) : (
                     <button 
                         onClick={signIn}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-slate-700 rounded-lg hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500"
                     >
                         <CalendarIcon className="w-5 h-5"/>
                         {t('connectGoogle')}
@@ -232,7 +238,7 @@ const SettingsPage: React.FC = () => {
                     <div className="flex items-center gap-4 pt-2">
                          <button
                             type="submit"
-                            className="px-5 py-2 text-sm font-semibold text-white bg-sky-600 rounded-lg hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-sky-500 transition-colors"
+                            className={primaryButtonClasses}
                         >
                             {t('saveJiraConfig')}
                         </button>
@@ -240,7 +246,7 @@ const SettingsPage: React.FC = () => {
                             type="button"
                             onClick={handleTestJiraConnection}
                             disabled={isTestingJira}
-                            className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-slate-700 rounded-lg hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-slate-500 transition-colors disabled:opacity-50 disabled:cursor-wait"
+                            className={`${secondaryButtonClasses} flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait`}
                         >
                             {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
                         </button>
@@ -261,7 +267,7 @@ const SettingsPage: React.FC = () => {
             <p className="text-slate-400 mt-1 mb-4">{t('clearDataDescription')}</p>
             <button
                 onClick={handleClearData}
-                className="px-5 py-2 text-sm font-semibold text-white bg-rose-600 rounded-lg hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-rose-500 transition-colors"
+                className={destructiveButtonClasses}
             >
                 {t('clearDataButton')}
             </button>

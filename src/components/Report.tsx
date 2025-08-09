@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { AnalysisResult } from '../types';
 import { formatTime } from '../utils/time';
 import { LightBulbIcon } from './icons';
@@ -44,49 +44,45 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     return <EmptyState totalTasksTodayCount={totalTasksTodayCount} />;
   }
   
-  const chartData = analysisResult.categories.map(cat => ({
-    name: cat.categoryName,
-    value: cat.totalTime,
-  }));
+  const chartData = (analysisResult.categories || [])
+    .map(cat => ({
+        name: cat.categoryName,
+        value: cat.totalTime,
+    }))
+    .sort((a, b) => a.value - b.value);
   
-  const totalTime = chartData.reduce((acc, entry) => acc + entry.value, 0);
-
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
         <h3 className="text-lg font-semibold text-slate-100 mb-4">{t('reportChartTitle')}</h3>
-        <div className="bg-slate-800/50 rounded-lg p-2 sm:p-4">
-          <div className="h-48 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={false}
-                  innerRadius={50}
-                  outerRadius={70}
-                  fill="#8884d8"
-                  dataKey="value"
-                  nameKey="name"
-                >
-                  {chartData.map((_, index) => (
+        <div className="h-auto w-full bg-slate-900/70 rounded-lg p-2 sm:p-4">
+           <ResponsiveContainer width="100%" height={chartData.length * 40 + 20}>
+              <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                <XAxis type="number" stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(value) => formatTime(value).slice(0,5)} axisLine={false} tickLine={false} />
+                <YAxis 
+                  type="category" 
+                  dataKey="name" 
+                  stroke="#cbd5e1" 
+                  width={100} 
+                  tick={{ fontSize: 12, style: { textTransform: 'capitalize' } }} 
+                  axisLine={false} 
+                  tickLine={false}
+                  interval={0}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} 
+                  wrapperClassName="!bg-slate-700 !border-slate-600 rounded-lg"
+                  cursor={{ fill: 'rgba(14, 165, 233, 0.1)' }}
+                  labelStyle={{ color: '#cbd5e1' }}
+                  contentStyle={{ background: 'transparent', border: 'none' }}
+                />
+                <Bar dataKey="value" barSize={20} radius={[0, 4, 4, 0]}>
+                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-slate-700 !border-slate-600 rounded-md" />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 px-2">
-            {chartData.map((entry, index) => (
-                <div key={`legend-${index}`} className="flex items-center text-sm text-slate-300">
-                    <span className="w-3 h-3 mr-2 rounded-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                    <span>{`${entry.name} (${totalTime > 0 ? ((entry.value / totalTime) * 100).toFixed(0) : 0}%)`}</span>
-                </div>
-            ))}
-          </div>
+                </Bar>
+              </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
       
@@ -102,25 +98,6 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
             </li>
           ))}
         </ul>
-      </div>
-
-       <div>
-        <h3 className="text-lg font-semibold text-slate-100 mb-4">{t('reportCategoriesTitle')}</h3>
-        <div className="space-y-4">
-          {analysisResult.categories.map((category, index) => (
-            <div key={index} className="bg-slate-800/50 p-4 rounded-lg">
-                <div className="flex justify-between items-baseline mb-2">
-                    <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
-                    <span className="text-sm font-mono text-slate-400">{formatTime(category.totalTime)}</span>
-                </div>
-                <ul className="list-disc list-inside text-slate-300">
-                    {category.tasks.map((task, taskIndex) => (
-                        <li key={taskIndex}>{task}</li>
-                    ))}
-                </ul>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

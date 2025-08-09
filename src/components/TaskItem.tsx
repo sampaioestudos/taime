@@ -94,7 +94,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
         <div className="flex items-center gap-2 self-end mt-1">
           <button
             type="submit"
-            className="px-3 py-1 text-sm font-semibold text-white bg-emerald-600 rounded-md hover:bg-emerald-500 transition-colors"
+            className="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 transition-colors"
           >
             {t('saveButton')}
           </button>
