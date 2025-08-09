@@ -20,13 +20,28 @@ const Footer: React.FC = () => {
         <footer className="shrink-0 text-xs text-slate-500 py-6 px-4 border-t border-t-slate-800 bg-slate-950">
           <div className="max-w-4xl mx-auto space-y-4 text-center">
             <h3 className="font-semibold text-base sm:text-lg text-slate-200">{t('footerSupportTitle')}</h3>
-             <p className="text-sm text-slate-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: t('footerSupportText').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="font-semibold text-cyan-400 hover:text-cyan-300 underline">${t('footerSupportLinkHere')}</a>`) }} />
+             <p className="text-sm text-slate-400 leading-relaxed">
+                {t('footerSupportText_part1')}
+                <strong>{t('footerSupportText_bold')}</strong>
+                {t('footerSupportText_part2')}
+                <a href={donationLink} target="_blank" rel="noopener noreferrer" className="font-semibold text-cyan-400 hover:text-cyan-300 underline">
+                    {t('footerSupportLinkText')}
+                </a>
+                {t('footerSupportText_part3')}
+             </p>
         
             <div className="pt-2">
                 <hr className="border-slate-700/50 max-w-md mx-auto" />
             </div>
             
-            <p className="italic text-slate-500 text-xs leading-relaxed"  dangerouslySetInnerHTML={{ __html: t('footerCredits').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="text-cyan-500 hover:underline">${donationLink}</a>`) }}/>
+            <p className="italic text-slate-500 text-xs leading-relaxed">
+                {t('footerCreditsText_part1')}
+                <strong>{t('footerCreditsText_bold')}</strong>
+                {t('footerCreditsText_part2')}
+                <a href={donationLink} target="_blank" rel="noopener noreferrer" className="text-cyan-500 hover:underline">
+                    {donationLink}
+                </a>.
+            </p>
           </div>
       </footer>
     );

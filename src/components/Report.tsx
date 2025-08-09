@@ -77,7 +77,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                   contentStyle={{ background: 'transparent', border: 'none' }}
                 />
                 <Bar dataKey="value" barSize={20} radius={[0, 4, 4, 0]}>
-                  {chartData.map((entry, index) => (
+                  {chartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>
