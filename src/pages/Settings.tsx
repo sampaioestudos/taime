@@ -198,15 +198,15 @@ const SettingsPage: React.FC = () => {
               <p className="text-slate-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
                 {isSignedIn ? (
                     <div className="flex items-center justify-between">
-                         <p className="text-sm text-slate-300">{t('connectedAs', {email: user?.profileObj?.email || ''})}</p>
-                         <button onClick={signOut} className="text-sm font-semibold text-rose-500 hover:text-rose-400 transition-colors">
+                         <p className="text-sm text-slate-300">{t('connectedAs', {email: user?.email || ''})}</p>
+                         <button onClick={signOut} className={destructiveButtonClasses}>
                              {t('disconnectGoogle')}
                          </button>
                     </div>
                 ) : (
                     <button 
                         onClick={signIn}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500"
+                        className={`${secondaryButtonClasses} flex items-center gap-2`}
                     >
                         <CalendarIcon className="w-5 h-5"/>
                         {t('connectGoogle')}
