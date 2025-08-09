@@ -21,9 +21,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
   const [editedJiraKey, setEditedJiraKey] = useState(task.jiraIssueKey || '');
 
 
-  const baseClasses = "flex items-center justify-between p-3 rounded-lg transition-all duration-300";
+  const baseClasses = "flex items-center justify-between p-3 rounded-lg transition-all duration-200";
   const inactiveClasses = "bg-slate-800 hover:bg-slate-700/70";
-  const activeClasses = "bg-cyan-500/20 ring-2 ring-cyan-500 shadow-lg";
+  const activeClasses = "bg-cyan-600/80 ring-2 ring-cyan-400 shadow-lg";
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,14 +74,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           value={editedName}
           onChange={(e) => setEditedName(e.target.value)}
           placeholder={t('taskNamePlaceholder')}
-          className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
+          className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
           autoFocus
         />
         <textarea
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
             placeholder={t('taskDescriptionPlaceholder')}
-            className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
+            className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
             rows={2}
         />
         <input
@@ -89,7 +89,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           value={editedJiraKey}
           onChange={(e) => setEditedJiraKey(e.target.value.toUpperCase())}
           placeholder={t('jiraIssueKeyPlaceholder')}
-          className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
+          className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
            onKeyDown={handleKeyDown}
         />
         <div className="flex items-center gap-2 self-end mt-1">
@@ -109,30 +109,30 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
   return (
     <div
       onClick={() => onTaskClick(task.id)}
-      className={`${baseClasses} group cursor-pointer ${isActive ? activeClasses : inactiveClasses}`}
+      className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses} group cursor-pointer`}
       role="button"
       tabIndex={0}
       aria-label={`Task: ${task.name}. Time: ${formatTime(task.elapsedSeconds)}. Status: ${isActive ? 'Active' : 'Paused'}`}
     >
       <div className="flex flex-col gap-1 truncate flex-grow">
          <div className="flex items-center gap-2">
-            <span className="font-medium text-slate-100 truncate">{task.name}</span>
-            {task.jiraIssueKey && <span className="text-xs bg-sky-900/80 text-sky-300 font-mono px-1.5 py-0.5 rounded">{task.jiraIssueKey}</span>}
+            <span className="font-medium text-gray-100 truncate">{task.name}</span>
+            {task.jiraIssueKey && <span className="text-xs bg-blue-900/80 text-blue-300 font-mono px-1.5 py-0.5 rounded">{task.jiraIssueKey}</span>}
          </div>
-         {task.description && <p className="text-sm text-slate-400 truncate">{task.description}</p>}
+         {task.description && <p className="text-sm text-gray-400 truncate">{task.description}</p>}
       </div>
      
       <div className="flex items-center gap-3 shrink-0">
-         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             {task.jiraIssueKey && timeToLog > 0 && (
-                <button onClick={handleLogJiraClick} className="p-1 text-sky-400 hover:text-white" aria-label={t('jiraLogWork')}>
+                <button onClick={handleLogJiraClick} className="p-1 text-blue-400 hover:text-white" aria-label={t('jiraLogWork')}>
                     <JiraIcon className="h-4 w-4" />
                 </button>
             )}
-           <button onClick={handleEditClick} className="p-1 text-slate-400 hover:text-white" aria-label={t('editTask')}>
+           <button onClick={handleEditClick} className="p-1 text-gray-400 hover:text-white" aria-label={t('editTask')}>
              <EditIcon className="h-4 w-4" />
            </button>
-           <button onClick={handleDeleteClick} className="p-1 text-rose-500 hover:text-rose-400" aria-label={t('deleteTask')}>
+           <button onClick={handleDeleteClick} className="p-1 text-red-400 hover:text-red-300" aria-label={t('deleteTask')}>
              <TrashIcon className="h-4 w-4" />
            </button>
          </div>
@@ -140,7 +140,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
         <span className={`font-mono text-base sm:text-lg ${isActive ? 'text-white' : 'text-cyan-400'}`}>
           {formatTime(task.elapsedSeconds)}
         </span>
-        <div className={`flex items-center justify-center h-8 w-8 rounded-full transition-colors ${isActive ? 'bg-white/20' : 'bg-slate-700'}`}>
+        <div className={`flex items-center justify-center h-8 w-8 rounded-full ${isActive ? 'bg-white/20' : 'bg-slate-700'}`}>
           {isActive ? <PauseIcon className="h-5 w-5 text-white" /> : <PlayIcon className="h-5 w-5 text-cyan-400" />}
         </div>
       </div>

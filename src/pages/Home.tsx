@@ -22,8 +22,8 @@ import { logWorkToJira } from '../services/jiraService';
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
 
 
@@ -258,14 +258,14 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <header className="flex flex-wrap justify-between items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter text-slate-100 leading-tight">{t('appSlogan')}</h1>
+      <header className="flex justify-between items-center mb-8 gap-4">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">{t('manageTasks')}</h1>
           </div>
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-gray-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -307,7 +307,7 @@ const HomePage: React.FC = () => {
                   {isAnalyzing ? t('analyzingButton') : t('analyzeButton')}
                 </button>
               </div>
-              {error && <p className="text-rose-400 bg-rose-500/20 p-3 rounded-lg mb-4">{error}</p>}
+              {error && <p className="text-red-400 bg-red-900/50 p-3 rounded-md mb-4">{error}</p>}
               <Report analysisResult={analysisResult} isLoading={isAnalyzing} totalTasksTodayCount={allTasksForTodayCount} />
             </div>
 
@@ -324,7 +324,7 @@ const HomePage: React.FC = () => {
 
         <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)}>
         <div className="p-1">
-          <h2 className="text-xl font-bold text-slate-100 mb-4">
+          <h2 className="text-xl font-bold text-white mb-4">
             {t('analysisForDate', { date: selectedDate || '' })}
           </h2>
           <Report

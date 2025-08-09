@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
             <div className="flex items-center justify-center sm:justify-start gap-3 p-4 border-b border-slate-800">
                 <LogoIcon className="h-8 w-8 text-cyan-400 shrink-0" />
                 <div className="hidden sm:block">
-                     <h1 className="text-xl font-bold tracking-tight text-slate-100 leading-tight">t<span className="italic">ai</span>me</h1>
+                     <h1 className="text-xl font-bold tracking-tight text-white leading-tight">t<span className="italic">ai</span>me</h1>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             activePage === item.id
                                 ? 'bg-cyan-600 text-white'
-                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                : 'text-gray-300 hover:bg-slate-700 hover:text-white'
                         }`}
                     >
                         <item.icon className="h-6 w-6 shrink-0" />
@@ -51,15 +51,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
                 <div className="hidden sm:block">
                     <div className="flex justify-between items-baseline mb-1">
                         <span className="text-sm font-bold text-white">{t('userLevel')} {level}</span>
-                        <span className="text-xs text-slate-400">{userProgress.points} {t('totalPoints')}</span>
+                        <span className="text-xs text-gray-400">{userProgress.points} {t('totalPoints')}</span>
                     </div>
-                    <div className="w-full bg-slate-700 rounded-full h-1.5">
+                    <div className="w-full bg-gray-700 rounded-full h-1.5">
                         <div className="bg-cyan-400 h-1.5 rounded-full" style={{ width: `${progress}%` }}></div>
                     </div>
                 </div>
                  <div className="block sm:hidden text-center">
                     <div className="font-bold text-lg text-white">{level}</div>
-                    <div className="text-xs text-slate-400">LVL</div>
+                    <div className="text-xs text-gray-400">LVL</div>
                 </div>
             </div>
         </aside>
