@@ -22,12 +22,12 @@ const LoadingSpinner: React.FC = () => (
 const EmptyState: React.FC<{ totalTasksTodayCount: number }> = ({ totalTasksTodayCount }) => {
     const { t } = useTranslation();
     return (
-        <div className="text-center p-8 border-2 border-dashed border-gray-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
-            <h3 className="text-lg font-semibold text-white">{t('reportEmptyTitle')}</h3>
+        <div className="text-center p-8 border-2 border-dashed border-slate-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
+            <h3 className="text-lg font-semibold text-slate-100">{t('reportEmptyTitle')}</h3>
             {totalTasksTodayCount > 0 ? (
-                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
+                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
             ) : (
-                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
+                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
             )}
         </div>
     );
@@ -54,8 +54,8 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
-        <div className="bg-gray-800 rounded-lg p-2 sm:p-4">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">{t('reportChartTitle')}</h3>
+        <div className="bg-slate-800/50 rounded-lg p-2 sm:p-4">
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -75,13 +75,13 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700 !border-gray-600 rounded-md" />
+                <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-slate-700 !border-slate-600 rounded-md" />
               </PieChart>
             </ResponsiveContainer>
           </div>
            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 px-2">
             {chartData.map((entry, index) => (
-                <div key={`legend-${index}`} className="flex items-center text-sm text-gray-300">
+                <div key={`legend-${index}`} className="flex items-center text-sm text-slate-300">
                     <span className="w-3 h-3 mr-2 rounded-sm" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
                     <span>{`${entry.name} (${totalTime > 0 ? ((entry.value / totalTime) * 100).toFixed(0) : 0}%)`}</span>
                 </div>
@@ -91,13 +91,13 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
       </div>
       
       <div>
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <LightBulbIcon className="h-6 w-6 text-yellow-400"/>
+        <h3 className="text-lg font-semibold text-slate-100 mb-4 flex items-center gap-2">
+            <LightBulbIcon className="h-6 w-6 text-amber-400"/>
             {t('reportInsightsTitle')}
         </h3>
         <ul className="space-y-2">
           {analysisResult.insights.map((insight, index) => (
-            <li key={index} className="bg-gray-800 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
+            <li key={index} className="bg-slate-800/50 p-3 rounded-md text-slate-300 border-l-4 border-cyan-500">
               {insight}
             </li>
           ))}
@@ -105,15 +105,15 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
       </div>
 
        <div>
-        <h3 className="text-lg font-semibold text-white mb-4">{t('reportCategoriesTitle')}</h3>
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">{t('reportCategoriesTitle')}</h3>
         <div className="space-y-4">
           {analysisResult.categories.map((category, index) => (
-            <div key={index} className="bg-gray-800 p-4 rounded-lg">
+            <div key={index} className="bg-slate-800/50 p-4 rounded-lg">
                 <div className="flex justify-between items-baseline mb-2">
                     <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
-                    <span className="text-sm font-mono text-gray-400">{formatTime(category.totalTime)}</span>
+                    <span className="text-sm font-mono text-slate-400">{formatTime(category.totalTime)}</span>
                 </div>
-                <ul className="list-disc list-inside text-gray-300">
+                <ul className="list-disc list-inside text-slate-300">
                     {category.tasks.map((task, taskIndex) => (
                         <li key={taskIndex}>{task}</li>
                     ))}

@@ -17,16 +17,16 @@ const Footer: React.FC = () => {
     const donationLink = "https://link.mercadopago.com.br/taimeonline";
     
     return (
-        <footer className="shrink-0 text-xs text-gray-500 py-6 px-4 border-t border-t-gray-800 bg-gray-900">
+        <footer className="shrink-0 text-xs text-slate-500 py-6 px-4 border-t border-t-slate-800 bg-slate-950">
           <div className="max-w-4xl mx-auto space-y-4 text-center">
-            <h3 className="font-semibold text-base sm:text-lg text-gray-200">{t('footerSupportTitle')}</h3>
-             <p className="text-sm text-gray-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: t('footerSupportText').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="font-semibold text-cyan-400 hover:text-cyan-300 underline">${t('footerSupportLinkHere')}</a>`) }} />
+            <h3 className="font-semibold text-base sm:text-lg text-slate-200">{t('footerSupportTitle')}</h3>
+             <p className="text-sm text-slate-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: t('footerSupportText').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="font-semibold text-cyan-400 hover:text-cyan-300 underline">${t('footerSupportLinkHere')}</a>`) }} />
         
             <div className="pt-2">
-                <hr className="border-gray-700/50 max-w-md mx-auto" />
+                <hr className="border-slate-700/50 max-w-md mx-auto" />
             </div>
             
-            <p className="italic text-gray-500 text-xs leading-relaxed"  dangerouslySetInnerHTML={{ __html: t('footerCredits').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="text-cyan-500 hover:underline">${donationLink}</a>`) }}/>
+            <p className="italic text-slate-500 text-xs leading-relaxed"  dangerouslySetInnerHTML={{ __html: t('footerCredits').replace('{link}', `<a href="${donationLink}" target="_blank" rel="noopener noreferrer" class="text-cyan-500 hover:underline">${donationLink}</a>`) }}/>
           </div>
       </footer>
     );
@@ -37,7 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activePage, onNavigate }) => 
     const [userProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
 
     return (
-        <div className="flex h-screen bg-gray-900 text-gray-100 font-sans">
+        <div className="flex h-screen bg-slate-950 text-slate-100 font-sans">
             <Sidebar activePage={activePage} onNavigate={onNavigate} userProgress={userProgress} />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <main className="flex-grow p-4 sm:p-6 lg:p-8 overflow-y-auto">

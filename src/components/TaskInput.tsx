@@ -85,7 +85,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-6">
       <div className="relative" ref={containerRef}>
         <input
           type="text"
@@ -93,20 +93,20 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
           onChange={handleInputChange}
           onFocus={() => searchResults.length > 0 && setShowResults(true)}
           placeholder={jiraConfig ? t('addTaskPlaceholder') : t('taskNamePlaceholder')}
-          className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors"
+          className="w-full bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors"
           required
           autoComplete="off"
         />
         {showResults && (isSearching || searchResults.length > 0) && (
-            <div className="absolute z-10 w-full mt-1 bg-gray-600 border border-gray-500 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                 {isSearching ? (
-                    <div className="px-4 py-2 text-gray-400">{t('jiraSearching')}</div>
+                    <div className="px-4 py-2 text-slate-400">{t('jiraSearching')}</div>
                 ) : (
-                    <ul className="divide-y divide-gray-500">
+                    <ul className="divide-y divide-slate-600">
                         {searchResults.map(issue => (
-                            <li key={issue.key} onClick={() => handleSelectIssue(issue)} className="px-4 py-2 hover:bg-cyan-700 cursor-pointer">
-                                <div className="font-bold text-white">{issue.key}</div>
-                                <div className="text-sm text-gray-300 truncate">{issue.summary}</div>
+                            <li key={issue.key} onClick={() => handleSelectIssue(issue)} className="px-4 py-2 hover:bg-cyan-600 cursor-pointer transition-colors">
+                                <div className="font-bold text-slate-100">{issue.key}</div>
+                                <div className="text-sm text-slate-300 truncate">{issue.summary}</div>
                             </li>
                         ))}
                     </ul>
@@ -117,7 +117,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
       
       <button
         type="submit"
-        className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors flex items-center justify-center sm:self-start gap-2"
+        className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors flex items-center justify-center sm:self-start gap-2"
       >
         <PlusIcon className="h-5 w-5"/>
         <span>{t('addTaskButton')}</span>

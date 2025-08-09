@@ -25,12 +25,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       aria-modal="true"
     >
       <div
-        className="bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 ring-1 ring-white/10 relative"
+        className="bg-slate-900 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 ring-1 ring-slate-800 relative"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
           aria-label={t('closeButton')}
         >
           <XIcon className="h-6 w-6" />

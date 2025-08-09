@@ -22,11 +22,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
     ];
 
     return (
-        <aside className="w-16 sm:w-64 bg-gray-800/50 ring-1 ring-white/10 flex flex-col">
-            <div className="flex items-center justify-center sm:justify-start gap-3 p-4 border-b border-gray-700/50">
+        <aside className="w-16 sm:w-64 bg-slate-900 ring-1 ring-slate-800 flex flex-col">
+            <div className="flex items-center justify-center sm:justify-start gap-3 p-4 border-b border-slate-800">
                 <LogoIcon className="h-8 w-8 text-cyan-400 shrink-0" />
                 <div className="hidden sm:block">
-                     <h1 className="text-xl font-bold tracking-tight text-white leading-tight">t<span className="italic">ai</span>me</h1>
+                     <h1 className="text-xl font-bold tracking-tight text-slate-100 leading-tight">t<span className="italic">ai</span>me</h1>
                 </div>
             </div>
 
@@ -35,10 +35,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
                     <button
                         key={item.id}
                         onClick={() => onNavigate(item.id as Page)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             activePage === item.id
                                 ? 'bg-cyan-600 text-white'
-                                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                         }`}
                     >
                         <item.icon className="h-6 w-6 shrink-0" />
@@ -47,19 +47,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate, userProgress 
                 ))}
             </nav>
 
-            <div className="p-4 border-t border-gray-700/50">
+            <div className="p-4 border-t border-slate-800">
                 <div className="hidden sm:block">
                     <div className="flex justify-between items-baseline mb-1">
                         <span className="text-sm font-bold text-white">{t('userLevel')} {level}</span>
-                        <span className="text-xs text-gray-400">{userProgress.points} {t('totalPoints')}</span>
+                        <span className="text-xs text-slate-400">{userProgress.points} {t('totalPoints')}</span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-1.5">
+                    <div className="w-full bg-slate-700 rounded-full h-1.5">
                         <div className="bg-cyan-400 h-1.5 rounded-full" style={{ width: `${progress}%` }}></div>
                     </div>
                 </div>
                  <div className="block sm:hidden text-center">
                     <div className="font-bold text-lg text-white">{level}</div>
-                    <div className="text-xs text-gray-400">LVL</div>
+                    <div className="text-xs text-slate-400">LVL</div>
                 </div>
             </div>
         </aside>

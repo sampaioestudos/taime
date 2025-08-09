@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { XIcon, LightBulbIcon } from './icons';
+import { XIcon, LightBulbIcon, CheckCircleIcon } from './icons';
 
 type ToastType = 'info' | 'success' | 'error';
 
@@ -18,25 +18,25 @@ interface ToastContextType {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> = ({ toast, onDismiss }) => {
-  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 text-white rounded-lg shadow-lg ring-1 ring-white/10 transition-all transform";
+  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 text-white rounded-xl shadow-lg ring-1 ring-black/20 transition-all transform";
   
   const typeClasses = {
-    info: 'bg-gray-800',
-    success: 'bg-green-800',
-    error: 'bg-red-800',
+    info: 'bg-slate-800 text-slate-100',
+    success: 'bg-emerald-800/90 text-emerald-100',
+    error: 'bg-rose-800/90 text-rose-100',
   };
   
   const icons = {
-      info: <LightBulbIcon className="h-6 w-6 text-yellow-400"/>,
-      success: <LightBulbIcon className="h-6 w-6 text-green-400"/>,
-      error: <LightBulbIcon className="h-6 w-6 text-red-400"/>
+      info: <LightBulbIcon className="h-6 w-6 text-sky-400"/>,
+      success: <CheckCircleIcon className="h-6 w-6 text-emerald-400"/>,
+      error: <LightBulbIcon className="h-6 w-6 text-rose-400"/>
   }
 
   return (
     <div className={`${baseClasses} ${typeClasses[toast.type]} animate-fade-in-right`}>
       <div className="shrink-0">{icons[toast.type]}</div>
       <div className="flex-1 text-sm font-medium">{toast.message}</div>
-      <button onClick={() => onDismiss(toast.id)} className="p-1 text-gray-400 hover:text-white rounded-full">
+      <button onClick={() => onDismiss(toast.id)} className="p-1 text-slate-400 hover:text-white rounded-full">
         <XIcon className="h-4 w-4" />
       </button>
     </div>
