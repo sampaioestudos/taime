@@ -18,7 +18,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(task.name);
   const [editedDescription, setEditedDescription] = useState(task.description || '');
-  const [editedJiraKey, setEditedJiraKey] = useState(task.jiraIssueKey || '');
 
 
   const baseClasses = "flex items-center justify-between p-3 rounded-lg transition-all duration-200";
@@ -29,7 +28,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     e.stopPropagation();
     setEditedName(task.name);
     setEditedDescription(task.description || '');
-    setEditedJiraKey(task.jiraIssueKey || '');
     setIsEditing(true);
   };
 
@@ -47,7 +45,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     e.stopPropagation();
     e.preventDefault();
     if (editedName.trim()) {
-      onEditTask(task.id, editedName.trim(), editedDescription.trim(), editedJiraKey.trim().toUpperCase());
+      onEditTask(task.id, editedName.trim(), editedDescription.trim(), task.jiraIssueKey);
     }
     setIsEditing(false);
   };
@@ -76,6 +74,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           placeholder={t('taskNamePlaceholder')}
           className="flex-grow bg-gray-600 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
           autoFocus
+          onKeyDown={handleKeyDown}
         />
         <textarea
             value={editedDescription}
@@ -83,14 +82,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
             placeholder={t('taskDescriptionPlaceholder')}
             className="flex-grow bg-gray-600 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
             rows={2}
-        />
-        <input
-          type="text"
-          value={editedJiraKey}
-          onChange={(e) => setEditedJiraKey(e.target.value.toUpperCase())}
-          placeholder={t('jiraIssueKeyPlaceholder')}
-          className="flex-grow bg-gray-600 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
-           onKeyDown={handleKeyDown}
+            onKeyDown={handleKeyDown}
         />
         <div className="flex items-center gap-2 self-end mt-1">
           <button

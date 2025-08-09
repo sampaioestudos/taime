@@ -41,6 +41,10 @@ export const translations = {
     navAchievements: 'Achievements',
     userLevel: 'Level',
     totalPoints: 'Points',
+    footerSupportTitle: 'Support taime ☕',
+    footerSupportText: 'If <strong>taime</strong> is helping you tame deadlines and boost your productivity, how about a "coffee"? Your donation helps keep the servers running and the Gemini API working! Click {link} to support!',
+    footerSupportLinkHere: 'here',
+    footerCredits: '2025 - Licensed under GNU GPL v3 - Developed with 💜 by Edward to simplify time management for the Dev Team. Thanks to the users and donors who keep <strong>taime</strong> alive! Donate a ☕ via Pix: {link}.',
     // Settings
     settingsTitle: 'Settings',
     weeklyGoalTitle: 'Weekly Goal',
@@ -141,6 +145,10 @@ export const translations = {
     navAchievements: 'Conquistas',
     userLevel: 'Nível',
     totalPoints: 'Pontos',
+    footerSupportTitle: 'Apoie o taime ☕',
+    footerSupportText: 'Se o <strong>taime</strong> está te ajudando a domar os prazos e turbinar sua produtividade, que tal um "cafezinho"? Sua doação ajuda a manter os servidores no ar e a API do Gemini funcionando! Clique {link} para apoiar!',
+    footerSupportLinkHere: 'aqui',
+    footerCredits: '2025 - Licenciado sob GNU GPL v3 - Desenvolvido com 💜 por Edward para simplificar o gerenciamento de tempo do Dev Team. Agradecemos aos usuários e doadores que mantêm o <strong>taime</strong> vivo! Doe um ☕ via Pix: {link}.',
     // Settings
     settingsTitle: 'Configurações',
     weeklyGoalTitle: 'Meta Semanal',

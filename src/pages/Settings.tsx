@@ -75,7 +75,7 @@ const SettingsPage: React.FC = () => {
         domain: jiraDomain.trim(),
         email: jiraEmail.trim(),
         apiToken: jiraApiToken.trim(),
-        projectKey: jiraProjectKey.trim().toUpperCase(),
+        projectKey: jiraProjectKey.trim().toUpperCase() || undefined,
     };
     if (!config.domain || !config.email || !config.apiToken) {
         addToast(t('jiraConfigError'), 'error');
@@ -101,8 +101,8 @@ const SettingsPage: React.FC = () => {
     if (isNaN(value) || value < 0) {
         value = 0;
     }
-    if (value > 60) {
-        value = 60;
+    if (value > 168) { // 24 * 7
+        value = 168;
     }
     setHours(value);
   }
@@ -112,6 +112,11 @@ const SettingsPage: React.FC = () => {
         setHistory({});
         setTasks([]);
         setUserProgress({ points: 0, level: 1 });
+        setGoal({ weeklyHours: 0, realtimeInsightsEnabled: false });
+        setJiraConfig(null);
+        if (isSignedIn) {
+            signOut();
+        }
         addToast(t('dataClearedSuccess'), 'success');
     }
   };
@@ -137,7 +142,7 @@ const SettingsPage: React.FC = () => {
                   value={hours}
                   onChange={handleHoursChange}
                   min="0"
-                  max="60"
+                  max="168"
                   className="w-24 bg-gray-700 text-gray-200 text-center border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   aria-label={t('hoursPerWeek')}
                 />
@@ -182,7 +187,7 @@ const SettingsPage: React.FC = () => {
               <p className="text-gray-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
                 {isSignedIn ? (
                     <div className="flex items-center justify-between">
-                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.profileObj?.email || ''})}</p>
+                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.email || ''})}</p>
                          <button onClick={signOut} className="text-sm font-semibold text-red-400 hover:text-red-300">
                              {t('disconnectGoogle')}
                          </button>

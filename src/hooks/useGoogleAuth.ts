@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -6,13 +6,15 @@ const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
 
 export const useGoogleAuth = () => {
-    const [gapiReady, setGapiReady] = useState(false);
-    const [gisReady, setGisReady] = useState(false);
     const [tokenClient, setTokenClient] = useState<any>(null);
+    const [gapiReady, setGapiReady] = useState(false);
 
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [user, setUser] = useLocalStorage<any>('taime-gauth-user', null);
     const [accessToken, setAccessToken] = useLocalStorage<string | null>('taime-gauth-token', null);
+
+    const gapiLoaded = useRef(false);
+    const gisLoaded = useRef(false);
 
     const signOut = useCallback(() => {
         if (accessToken && window.google?.accounts?.oauth2) {
@@ -26,14 +28,12 @@ export const useGoogleAuth = () => {
         }
     }, [accessToken, setAccessToken, setIsSignedIn, setUser]);
     
+    // Step 1: Initialize GAPI client for API calls
     const initGapiClient = useCallback(async () => {
         try {
             await window.gapi.client.init({
                 apiKey: GOOGLE_API_KEY,
-                discoveryDocs: [
-                    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-                    "https://www.googleapis.com/discovery/v1/apis/oauth2/v2/rest"
-                ],
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
             });
             setGapiReady(true);
         } catch (error) {
@@ -41,94 +41,78 @@ export const useGoogleAuth = () => {
         }
     }, []);
 
-    const handleGapiLoad = useCallback(() => {
-        window.gapi.load('client', initGapiClient);
+    // Step 2: Load GAPI script
+    useEffect(() => {
+        if (gapiLoaded.current || !GOOGLE_API_KEY) return;
+        
+        const script = document.createElement('script');
+        script.src = 'https://apis.google.com/js/api.js';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => window.gapi.load('client', initGapiClient);
+        document.body.appendChild(script);
+        gapiLoaded.current = true;
+
     }, [initGapiClient]);
 
-    const handleGisLoad = useCallback(() => {
-        try {
-            const client = window.google.accounts.oauth2.initTokenClient({
-                client_id: GOOGLE_CLIENT_ID,
-                scope: SCOPES,
-                callback: (tokenResponse: any) => {
-                    if (tokenResponse && tokenResponse.access_token) {
-                        setAccessToken(tokenResponse.access_token);
-                        setIsSignedIn(true);
-                    } else {
-                        console.error("Authentication failed, no access token.", tokenResponse);
-                        signOut();
+    // Step 3: Load GIS script and initialize token client
+    useEffect(() => {
+        if (gisLoaded.current || !GOOGLE_CLIENT_ID) return;
+
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            try {
+                const client = window.google.accounts.oauth2.initTokenClient({
+                    client_id: GOOGLE_CLIENT_ID,
+                    scope: SCOPES,
+                    callback: (tokenResponse: any) => {
+                        if (tokenResponse && tokenResponse.access_token) {
+                            setAccessToken(tokenResponse.access_token);
+                            setIsSignedIn(true);
+                        } else {
+                            console.error("Authentication failed, no access token.", tokenResponse);
+                            signOut();
+                        }
+                    },
+                    error_callback: (error: any) => {
+                        console.error("Authentication error:", error);
                     }
-                },
-                error_callback: (error: any) => {
-                    console.error("Authentication error:", error);
-                }
-            });
-            setTokenClient(client);
-            setGisReady(true);
-        } catch (error) {
-            console.error("Error initializing GIS client", error);
-        }
+                });
+                setTokenClient(client);
+            } catch (error) {
+                console.error("Error initializing GIS client", error);
+            }
+        };
+        document.body.appendChild(script);
+        gisLoaded.current = true;
+
     }, [setAccessToken, setIsSignedIn, signOut]);
 
-    useEffect(() => {
-        if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY) {
-            console.error("Google Auth credentials are not configured in your environment variables.");
-            return;
-        }
-        
-        const gapiScriptId = 'gapi-script';
-        const gisScriptId = 'gis-script';
-        
-        const gapiScript = document.getElementById(gapiScriptId);
-        if(!gapiScript) {
-            const script = document.createElement('script');
-            script.id = gapiScriptId;
-            script.src = 'https://apis.google.com/js/api.js';
-            script.async = true;
-            script.defer = true;
-            script.onload = handleGapiLoad;
-            document.body.appendChild(script);
-        } else if (!gapiReady) {
-            // If script exists but gapi not ready, it might be loading
-            gapiScript.addEventListener('load', handleGapiLoad);
-        }
-        
-        const gisScript = document.getElementById(gisScriptId);
-        if(!gisScript) {
-            const script = document.createElement('script');
-            script.id = gisScriptId;
-            script.src = 'https://accounts.google.com/gsi/client';
-            script.async = true;
-            script.defer = true;
-            script.onload = handleGisLoad;
-            document.body.appendChild(script);
-        } else if (!gisReady) {
-            gisScript.addEventListener('load', handleGisLoad);
-        }
-    }, [handleGapiLoad, handleGisLoad, gapiReady, gisReady]);
-
-    useEffect(() => {
-        if (gapiReady && accessToken) {
-            window.gapi.client.setToken({ access_token: accessToken });
-        }
-    }, [gapiReady, accessToken]);
-
+    // Step 4: When access token changes, set it for GAPI and fetch user info
     useEffect(() => {
         const fetchUser = async () => {
-            if (isSignedIn && gapiReady && accessToken && !user) {
-                 try {
-                    const response = await window.gapi.client.oauth2.userinfo.get();
-                    setUser({ profileObj: response.result });
+             if (gapiReady && accessToken) {
+                window.gapi.client.setToken({ access_token: accessToken });
+                try {
+                    // Use a more specific user info endpoint
+                    const response = await window.gapi.client.request({
+                        path: 'https://www.googleapis.com/oauth2/v2/userinfo'
+                    });
+                    setUser(response.result);
                 } catch (e: any) {
-                    if (e.result?.error?.code === 401 || e.status === 401) {
-                       signOut();
-                    }
                     console.error('Error fetching user profile', e);
+                    if (e.status === 401) { // Token likely expired or revoked
+                        signOut();
+                    }
                 }
             }
         };
         fetchUser();
-    }, [isSignedIn, gapiReady, accessToken, user, setUser, signOut]);
+    }, [gapiReady, accessToken, setUser, signOut]);
+
 
     const signIn = () => {
         if (tokenClient) {
