@@ -5,16 +5,9 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
 
-declare global {
-  interface Window {
-    gapi: any;
-    google: any;
-    tokenClient: any;
-  }
-}
-
 export const useGoogleAuth = () => {
     const [gapiReady, setGapiReady] = useState(false);
+    const [gisReady, setGisReady] = useState(false);
     const [tokenClient, setTokenClient] = useState<any>(null);
 
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
@@ -71,6 +64,7 @@ export const useGoogleAuth = () => {
                 }
             });
             setTokenClient(client);
+            setGisReady(true);
         } catch (error) {
             console.error("Error initializing GIS client", error);
         }
@@ -84,31 +78,34 @@ export const useGoogleAuth = () => {
         
         const gapiScriptId = 'gapi-script';
         const gisScriptId = 'gis-script';
-
-        if(document.getElementById(gapiScriptId) && document.getElementById(gisScriptId)) {
-            return;
-        }
-
-        if(!document.getElementById(gapiScriptId)) {
-            const gapiScript = document.createElement('script');
-            gapiScript.id = gapiScriptId;
-            gapiScript.src = 'https://apis.google.com/js/api.js';
-            gapiScript.async = true;
-            gapiScript.defer = true;
-            gapiScript.onload = handleGapiLoad;
-            document.body.appendChild(gapiScript);
+        
+        const gapiScript = document.getElementById(gapiScriptId);
+        if(!gapiScript) {
+            const script = document.createElement('script');
+            script.id = gapiScriptId;
+            script.src = 'https://apis.google.com/js/api.js';
+            script.async = true;
+            script.defer = true;
+            script.onload = handleGapiLoad;
+            document.body.appendChild(script);
+        } else if (!gapiReady) {
+            // If script exists but gapi not ready, it might be loading
+            gapiScript.addEventListener('load', handleGapiLoad);
         }
         
-        if(!document.getElementById(gisScriptId)) {
-            const gisScript = document.createElement('script');
-            gisScript.id = gisScriptId;
-            gisScript.src = 'https://accounts.google.com/gsi/client';
-            gisScript.async = true;
-            gisScript.defer = true;
-            gisScript.onload = handleGisLoad;
-            document.body.appendChild(gisScript);
+        const gisScript = document.getElementById(gisScriptId);
+        if(!gisScript) {
+            const script = document.createElement('script');
+            script.id = gisScriptId;
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.defer = true;
+            script.onload = handleGisLoad;
+            document.body.appendChild(script);
+        } else if (!gisReady) {
+            gisScript.addEventListener('load', handleGisLoad);
         }
-    }, [handleGapiLoad, handleGisLoad]);
+    }, [handleGapiLoad, handleGisLoad, gapiReady, gisReady]);
 
     useEffect(() => {
         if (gapiReady && accessToken) {

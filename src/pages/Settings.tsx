@@ -61,7 +61,7 @@ const SettingsPage: React.FC = () => {
             domain: jiraDomain.trim(),
             email: jiraEmail.trim(),
             apiToken: jiraApiToken.trim(),
-            projectKey: jiraProjectKey.trim().toUpperCase(),
+            projectKey: jiraProjectKey.trim().toUpperCase() || undefined,
         };
         setJiraConfig(newConfig);
         addToast(t('jiraConfigSaved'), 'success');

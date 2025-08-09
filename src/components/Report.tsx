@@ -57,7 +57,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
       <div>
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
         <div className="bg-gray-800 rounded-lg p-2 sm:p-4">
-          <div className="h-64 w-full">
+          <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -67,7 +67,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                   labelLine={false}
                   label={false}
                   innerRadius={50}
-                  outerRadius={80}
+                  outerRadius={70}
                   fill="#8884d8"
                   dataKey="value"
                   nameKey="name"

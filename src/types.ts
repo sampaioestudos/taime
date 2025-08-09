@@ -53,5 +53,7 @@ export interface JiraIssue {
 declare global {
   interface Window {
     gapi: any;
+    google: any;
+    tokenClient: any;
   }
 }

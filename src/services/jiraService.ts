@@ -63,7 +63,7 @@ export const searchJiraIssues = async (config: JiraConfig, searchTerm: string): 
     const sanitizedSearchTerm = searchTerm.replace(/"/g, '\\"').trim();
     if (!sanitizedSearchTerm) return [];
 
-    let jql = `summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm}"`;
+    let jql = `summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm.toUpperCase()}"`;
     if (config.projectKey) {
         jql = `project = "${config.projectKey.toUpperCase()}" AND (${jql})`;
     }
@@ -78,7 +78,7 @@ export const searchJiraIssues = async (config: JiraConfig, searchTerm: string): 
     try {
         const response = await callJiraApi(config, 'POST', 'search', bodyData);
         const data = await response.json();
-        return data.issues.map((issue: any) => ({
+        return (data.issues || []).map((issue: any) => ({
             key: issue.key,
             summary: issue.fields.summary
         }));

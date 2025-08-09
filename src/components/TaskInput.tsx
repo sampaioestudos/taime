@@ -48,10 +48,11 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
     const newName = e.target.value;
     setTaskName(newName);
     setSelectedJiraKey(undefined); // Clear selected key if user types again
-    if (newName.length > 2) {
+    if (newName.length > 2 && jiraConfig) {
       handleSearch(newName);
     } else {
       setSearchResults([]);
+      setShowResults(false);
     }
   };
 
@@ -91,7 +92,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
           value={taskName}
           onChange={handleInputChange}
           onFocus={() => searchResults.length > 0 && setShowResults(true)}
-          placeholder={jiraConfig ? t('addTaskPlaceholder') : t('addTaskPlaceholder').split(' or')[0]}
+          placeholder={jiraConfig ? t('addTaskPlaceholder') : t('taskNamePlaceholder')}
           className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors"
           required
           autoComplete="off"
