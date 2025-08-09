@@ -42,6 +42,12 @@ export interface JiraConfig {
     domain: string;
     email: string;
     apiToken: string;
+    projectKey?: string;
+}
+
+export interface JiraIssue {
+    key: string;
+    summary: string;
 }
 
 declare global {

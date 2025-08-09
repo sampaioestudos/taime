@@ -1,4 +1,4 @@
-import { JiraConfig } from '../types';
+import { JiraConfig, JiraIssue } from '../types';
 
 /**
  * Converts seconds to Jira's time tracking format (e.g., '1h 30m').
@@ -57,6 +57,37 @@ export const testJiraConnection = async (config: JiraConfig): Promise<boolean> =
         return false;
     }
 };
+
+export const searchJiraIssues = async (config: JiraConfig, searchTerm: string): Promise<JiraIssue[]> => {
+    // Sanitize searchTerm to prevent JQL injection
+    const sanitizedSearchTerm = searchTerm.replace(/"/g, '\\"').trim();
+    if (!sanitizedSearchTerm) return [];
+
+    let jql = `summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm}"`;
+    if (config.projectKey) {
+        jql = `project = "${config.projectKey.toUpperCase()}" AND (${jql})`;
+    }
+    jql += ` ORDER BY updated DESC`;
+
+    const bodyData = {
+        jql,
+        maxResults: 10,
+        fields: ["summary", "key"]
+    };
+
+    try {
+        const response = await callJiraApi(config, 'POST', 'search', bodyData);
+        const data = await response.json();
+        return data.issues.map((issue: any) => ({
+            key: issue.key,
+            summary: issue.fields.summary
+        }));
+    } catch (error) {
+        console.error('Jira search failed:', error);
+        return [];
+    }
+};
+
 
 export const logWorkToJira = async (
     config: JiraConfig,
