@@ -57,9 +57,9 @@ const WeeklyHistory: React.FC<WeeklyHistoryProps> = ({ history, goal, onAnalyzeD
 
           return (
             <div key={dateISO} className="py-3">
-              <div className="flex items-center justify-between gap-4 mb-2">
+              <div className="flex items-center justify-between gap-4">
                 <span className="font-semibold text-slate-300 w-10">{t(dayKey)}</span>
-                <div className="flex-grow">
+                <div className="flex-grow ml-2">
                      <div className="w-full bg-slate-700/80 rounded-full h-2">
                         <div
                         className="bg-cyan-500 h-2 rounded-full transition-all duration-500 ease-out"

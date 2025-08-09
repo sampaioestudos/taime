@@ -258,14 +258,14 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <header className="flex justify-between items-center mb-8 gap-4">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100 leading-tight">{t('manageTasks')}</h1>
+      <header className="flex flex-wrap justify-between items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter text-slate-100 leading-tight">{t('appSlogan')}</h1>
           </div>
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-slate-300 bg-slate-700 rounded-lg hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -273,7 +273,7 @@ const HomePage: React.FC = () => {
             <LanguageSwitcher />
             <button
               onClick={handleResetDay}
-              className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-700 rounded-lg hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+              className="px-4 py-2 text-sm font-semibold text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
             >
               {t('resetDay')}
             </button>
