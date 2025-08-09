@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 // These are now injected by Vite from your .env.local file
@@ -13,15 +13,17 @@ export const useGoogleAuth = () => {
     const [googleAuth, setGoogleAuth] = useState<any>(null);
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [user, setUser] = useLocalStorage<any>('taime-gauth-user', null);
+    const authInstanceRef = useRef<any>(null);
 
     const updateSigninStatus = useCallback((signedIn: boolean) => {
         setIsSignedIn(signedIn);
-        if (signedIn) {
-            setUser(googleAuth.currentUser.get());
+        const authInstance = authInstanceRef.current;
+        if (signedIn && authInstance) {
+            setUser(authInstance.currentUser.get());
         } else {
             setUser(null);
         }
-    }, [googleAuth, setIsSignedIn, setUser]);
+    }, [setIsSignedIn, setUser]);
 
     useEffect(() => {
         if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY) {
@@ -43,6 +45,7 @@ export const useGoogleAuth = () => {
                 }).then(() => {
                     setGapi(window.gapi);
                     const authInstance = window.gapi.auth2.getAuthInstance();
+                    authInstanceRef.current = authInstance;
                     setGoogleAuth(authInstance);
                     updateSigninStatus(authInstance.isSignedIn.get());
                     authInstance.isSignedIn.listen(updateSigninStatus);
@@ -58,13 +61,14 @@ export const useGoogleAuth = () => {
               document.body.removeChild(script);
             }
         };
+    // The effect should run only once. updateSigninStatus is stable due to useCallback with stable dependencies.
     }, [updateSigninStatus]);
 
     const signIn = () => {
         if (googleAuth) {
             googleAuth.signIn();
         } else {
-            console.error("Google Auth not initialized. Please check your API keys.");
+            console.error("Google Auth not initialized. Please check your API keys or wait for it to load.");
         }
     };
 

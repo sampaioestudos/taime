@@ -88,7 +88,7 @@ export const translations = {
     jiraTestConnection: 'Test Connection',
     jiraTesting: 'Testing...',
     jiraTestSuccess: 'Jira connection successful!',
-    jiraTestError: 'Connection failed. Check your details or try a browser CORS extension if developing locally.',
+    jiraTestError: 'Connection failed. Check your details. The API proxy is working but the request to Jira was rejected.',
     // Data Management
     dataManagementTitle: 'Data Management',
     clearDataButton: 'Clear All App Data',
@@ -185,7 +185,7 @@ export const translations = {
     jiraTestConnection: 'Testar Conexão',
     jiraTesting: 'Testando...',
     jiraTestSuccess: 'Conexão com Jira bem-sucedida!',
-    jiraTestError: 'Falha na conexão. Verifique seus dados ou tente usar uma extensão de CORS no navegador se estiver desenvolvendo localmente.',
+    jiraTestError: 'Falha na conexão. Verifique seus dados. O proxy da API está funcionando, mas a requisição para o Jira foi rejeitada.',
     // Data Management
     dataManagementTitle: 'Gerenciamento de Dados',
     clearDataButton: 'Limpar Todos os Dados',
