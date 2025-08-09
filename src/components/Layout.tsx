@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Sidebar from './Sidebar';
 import { Page } from '../App';
@@ -23,19 +24,27 @@ const Layout: React.FC<LayoutProps> = ({ children, activePage, onNavigate }) => 
                         {children}
                     </div>
                 </main>
-                <footer className="shrink-0 text-center text-xs text-gray-500 py-4 px-4 border-t border-t-gray-800">
-                  <div className="max-w-xl mx-auto space-y-2">
-                    <p className="font-semibold text-sm text-gray-400 mb-1">💾 Quer ajudar?</p>
-                    <p>Doe qualquer valor no link abaixo – pode ser o preço de um cafezinho ou de um latte turbinado!</p>
-                    <a 
-                      href="https://link.mercadopago.com.br/taimeonline" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-block bg-cyan-600 text-white font-semibold px-4 py-1.5 rounded-md text-xs hover:bg-cyan-500 transition-colors"
-                    >
-                        Doação via Mercado Pago
-                    </a>
-                    <p className="pt-4 text-gray-600">© 2025 - Feito por Edward Sampaio com carinho para o meu time da TOTVS.</p>
+                <footer className="shrink-0 text-center text-xs text-gray-500 py-6 px-4 border-t border-t-gray-800">
+                  <div className="max-w-3xl mx-auto space-y-4">
+                    <h3 className="font-semibold text-lg text-gray-200">Apoie o taime ☕</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      Se o <strong>taime</strong> está te ajudando a domar os prazos e turbinar sua produtividade, que tal um "cafezinho"? Sua doação ajuda a manter os servidores no ar e a API do Gemini funcionando! Clique{' '}
+                      <a href="https://link.mercadopago.com.br/taimeonline" target="_blank" rel="noopener noreferrer" className="font-semibold text-cyan-400 hover:text-cyan-300 underline">
+                        aqui
+                      </a>
+                      {' '}para apoiar!
+                    </p>
+                
+                    <div className="pt-2">
+                        <hr className="border-gray-700/50" />
+                    </div>
+                    
+                    <p className="italic text-gray-500 text-xs">
+                      2025 - Licenciado sob GNU GPL v3 - Desenvolvido com 💜 por Edward para simplificar o gerenciamento de tempo do Dev Team. Agradecemos aos usuários e doadores que mantêm o <strong>taime</strong> vivo! Doe um ☕ via Pix:{' '}
+                      <a href="https://link.mercadopago.com.br/taimeonline" target="_blank" rel="noopener noreferrer" className="text-cyan-600 hover:underline">
+                        link.mercadopago.com.br/taimeonline
+                      </a>.
+                    </p>
                   </div>
               </footer>
             </div>
