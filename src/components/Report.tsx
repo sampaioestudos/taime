@@ -99,6 +99,25 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
           ))}
         </ul>
       </div>
+
+       <div>
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">{t('reportCategoriesTitle')}</h3>
+        <div className="space-y-4">
+          {analysisResult.categories.map((category, index) => (
+            <div key={index} className="bg-slate-800/50 p-4 rounded-lg">
+                <div className="flex justify-between items-baseline mb-2">
+                    <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
+                    <span className="text-sm font-mono text-slate-400">{formatTime(category.totalTime)}</span>
+                </div>
+                <ul className="list-disc list-inside text-slate-300 space-y-1">
+                    {category.tasks.map((task, taskIndex) => (
+                        <li key={taskIndex}>{task}</li>
+                    ))}
+                </ul>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
