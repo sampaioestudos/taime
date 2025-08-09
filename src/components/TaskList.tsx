@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { Task } from '../types';
 import TaskItem from './TaskItem';
@@ -7,14 +9,12 @@ interface TaskListProps {
   tasks: Task[];
   onTaskClick: (taskId: string) => void;
   activeTaskId: string | null;
-  onEditTask: (taskId: string, newName: string, newDescription?: string) => void;
+  onEditTask: (taskId: string, newName: string, newDescription?: string, newJiraIssueKey?: string) => void;
   onDeleteTask: (taskId: string) => void;
   onLogTimeToJira: (taskId: string) => void;
-  onSyncToCalendar: (taskId: string) => void;
-  isSignedIn: boolean;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, onEditTask, onDeleteTask, onLogTimeToJira, onSyncToCalendar, isSignedIn }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, onEditTask, onDeleteTask, onLogTimeToJira }) => {
   const { t } = useTranslation();
 
   if (tasks.length === 0) {
@@ -36,8 +36,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, o
           onEditTask={onEditTask}
           onDeleteTask={onDeleteTask}
           onLogTimeToJira={onLogTimeToJira}
-          onSyncToCalendar={onSyncToCalendar}
-          isSignedIn={isSignedIn}
         />
       ))}
     </div>

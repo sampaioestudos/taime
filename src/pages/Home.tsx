@@ -17,15 +17,13 @@ import ExportImportModal from '../components/ExportImportModal';
 import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/exportImportService';
 import { useToast } from '../components/Toast';
 import { logWorkToJira } from '../services/jiraService';
-import { useGoogleAuth } from '../hooks/useGoogleAuth';
-import { createCalendarEvent } from '../services/calendarService';
 
 
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
 
 
@@ -35,8 +33,6 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { t, language } = useTranslation();
   const addToast = useToast();
-
-  const { isSignedIn } = useGoogleAuth();
 
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isExportImportModalOpen, setIsExportImportModalOpen] = useState(false);
@@ -130,10 +126,10 @@ const HomePage: React.FC = () => {
     setError(null);
   }, [tasks, setTasks, saveTasksToHistory]);
 
-  const handleEditTask = (taskId: string, newName: string, newDescription?: string) => {
+  const handleEditTask = (taskId: string, newName: string, newDescription?: string, newJiraIssueKey?: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === taskId ? { ...task, name: newName, description: newDescription } : task
+        task.id === taskId ? { ...task, name: newName, description: newDescription, jiraIssueKey: newJiraIssueKey } : task
       )
     );
   };
@@ -148,33 +144,6 @@ const HomePage: React.FC = () => {
     }
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
   };
-
-  const handleSyncToCalendar = useCallback(async (taskId: string) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || !isSignedIn) return;
-
-    // A task can be synced multiple times, we just update the event.
-    // For simplicity, we create a new event. A better implementation might store event ID.
-    const taskWithCompletionDate = {
-        ...task,
-        completionDate: new Date().toISOString(),
-    };
-
-    addToast(t('syncing'), 'info');
-    try {
-      await createCalendarEvent(taskWithCompletionDate);
-      setTasks(prev => 
-        prev.map(t => 
-          t.id === taskId ? { ...t, syncedToCalendar: true, completionDate: taskWithCompletionDate.completionDate } : t
-        )
-      );
-      addToast(t('synced'), 'success');
-    } catch (error) {
-      console.error("Calendar sync failed:", error);
-      addToast('Failed to sync to calendar.', 'error');
-    }
-  }, [tasks, isSignedIn, addToast, t, setTasks]);
-
 
   const handleLogTimeToJira = useCallback(async (taskId: string) => {
       const task = tasks.find(t => t.id === taskId);
@@ -322,8 +291,6 @@ const HomePage: React.FC = () => {
               onEditTask={handleEditTask}
               onDeleteTask={handleDeleteTask}
               onLogTimeToJira={handleLogTimeToJira}
-              onSyncToCalendar={handleSyncToCalendar}
-              isSignedIn={isSignedIn}
             />
           </div>
 

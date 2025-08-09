@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-200;
+    @apply bg-slate-950 text-slate-300;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

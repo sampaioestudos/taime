@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
 import { Task } from '../types';
 import { formatTime } from '../utils/time';
-import { PlayIcon, PauseIcon, EditIcon, TrashIcon, JiraIcon, CalendarIcon, CheckCircleIcon } from './icons';
+import { PlayIcon, PauseIcon, EditIcon, TrashIcon, JiraIcon } from './icons';
 import { useTranslation } from '../i18n';
 
 interface TaskItemProps {
   task: Task;
   onTaskClick: (taskId: string) => void;
   isActive: boolean;
-  onEditTask: (taskId:string, newName: string, newDescription?: string) => void;
+  onEditTask: (taskId:string, newName: string, newDescription?: string, newJiraIssueKey?: string) => void;
   onDeleteTask: (taskId: string) => void;
   onLogTimeToJira: (taskId: string) => void;
-  onSyncToCalendar: (taskId: string) => void;
-  isSignedIn: boolean;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEditTask, onDeleteTask, onLogTimeToJira, onSyncToCalendar, isSignedIn }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEditTask, onDeleteTask, onLogTimeToJira }) => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(task.name);
   const [editedDescription, setEditedDescription] = useState(task.description || '');
+  const [editedJiraKey, setEditedJiraKey] = useState(task.jiraIssueKey || '');
 
 
   const baseClasses = "flex items-center justify-between p-3 rounded-lg transition-all duration-300";
@@ -30,6 +29,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     e.stopPropagation();
     setEditedName(task.name);
     setEditedDescription(task.description || '');
+    setEditedJiraKey(task.jiraIssueKey || '');
     setIsEditing(true);
   };
 
@@ -43,16 +43,11 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     onLogTimeToJira(task.id);
   }
 
-  const handleSyncCalendarClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSyncToCalendar(task.id);
-  }
-
   const handleSave = (e: React.MouseEvent | React.FormEvent) => {
     e.stopPropagation();
     e.preventDefault();
     if (editedName.trim()) {
-      onEditTask(task.id, editedName.trim(), editedDescription.trim());
+      onEditTask(task.id, editedName.trim(), editedDescription.trim(), editedJiraKey.trim().toUpperCase());
     }
     setIsEditing(false);
   };
@@ -81,7 +76,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           placeholder={t('taskNamePlaceholder')}
           className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
           autoFocus
-          onKeyDown={handleKeyDown}
         />
         <textarea
             value={editedDescription}
@@ -89,12 +83,19 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
             placeholder={t('taskDescriptionPlaceholder')}
             className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
             rows={2}
-            onKeyDown={handleKeyDown}
+        />
+        <input
+          type="text"
+          value={editedJiraKey}
+          onChange={(e) => setEditedJiraKey(e.target.value.toUpperCase())}
+          placeholder={t('jiraIssueKeyPlaceholder')}
+          className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
+           onKeyDown={handleKeyDown}
         />
         <div className="flex items-center gap-2 self-end mt-1">
           <button
             type="submit"
-            className="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 transition-colors"
+            className="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500"
           >
             {t('saveButton')}
           </button>
@@ -127,15 +128,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
                 <button onClick={handleLogJiraClick} className="p-1 text-sky-400 hover:text-white" aria-label={t('jiraLogWork')}>
                     <JiraIcon className="h-4 w-4" />
                 </button>
-            )}
-            {isSignedIn && task.elapsedSeconds > 0 && (
-                task.syncedToCalendar ? (
-                    <span className="p-1 text-emerald-400" aria-label={t('synced')}><CheckCircleIcon className="h-4 w-4"/></span>
-                ) : (
-                <button onClick={handleSyncCalendarClick} className="p-1 text-violet-400 hover:text-white" aria-label={t('syncToCalendar')}>
-                    <CalendarIcon className="h-4 w-4" />
-                </button>
-                )
             )}
            <button onClick={handleEditClick} className="p-1 text-slate-400 hover:text-white" aria-label={t('editTask')}>
              <EditIcon className="h-4 w-4" />
