@@ -70,12 +70,17 @@ input[type=number] {
   animation: fadeInRight 0.3s ease-in-out;
 }
 
-/* Custom fix for browser autofill styles that override dark theme */
+/* Custom fix for browser autofill styles to ensure text is readable */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* Inset shadow to mimic bg-slate-800 */
-    -webkit-text-fill-color: #e2e8f0 !important; /* Force text to be text-slate-200 */
-    transition: background-color 9999s ease-in-out 0s; /* Hack to prevent browser from changing bg color */
+    /* Remove the problematic box-shadow hack that tried to force a dark background */
+    -webkit-box-shadow: none !important;
+
+    /* Set text color to a dark shade (slate-900) to be visible on the browser's default light autofill background, as requested. */
+    -webkit-text-fill-color: #0f172a !important; /* text-slate-900 */
+    
+    /* This transition hack helps prevent the browser from changing the background color immediately. */
+    transition: background-color 9999s ease-in-out 0s;
 }
