@@ -195,7 +195,7 @@ const SettingsPage: React.FC = () => {
               <p className="text-gray-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
                 {isSignedIn ? (
                     <div className="flex items-center justify-between">
-                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.profileObj?.email || ''})}</p>
+                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.email || ''})}</p>
                          <button onClick={signOut} className={destructiveButtonClasses}>
                              {t('disconnectGoogle')}
                          </button>
