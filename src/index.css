@@ -78,8 +78,8 @@ input:-webkit-autofill:active {
     /* Remove the problematic box-shadow hack that tried to force a dark background */
     -webkit-box-shadow: none !important;
 
-    /* Set text color to a dark shade (slate-900) to be visible on the browser's default light autofill background, as requested. */
-    -webkit-text-fill-color: #0f172a !important; /* text-slate-900 */
+    /* Set text color to the user-specified hex code for visibility on the browser's default light autofill background. */
+    -webkit-text-fill-color: #000012 !important;
     
     /* This transition hack helps prevent the browser from changing the background color immediately. */
     transition: background-color 9999s ease-in-out 0s;
