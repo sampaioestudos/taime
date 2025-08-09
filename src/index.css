@@ -69,3 +69,13 @@ input[type=number] {
 .animate-fade-in-right {
   animation: fadeInRight 0.3s ease-in-out;
 }
+
+/* Custom fix for browser autofill styles that override dark theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* Inset shadow to mimic bg-slate-800 */
+    -webkit-text-fill-color: #e2e8f0 !important; /* Force text to be text-slate-200 */
+    transition: background-color 9999s ease-in-out 0s; /* Hack to prevent browser from changing bg color */
+}
