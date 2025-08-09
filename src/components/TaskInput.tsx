@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusIcon, JiraIcon } from './icons';
 import { useTranslation } from '../i18n';
 import useLocalStorage from '../hooks/useLocalStorage';
