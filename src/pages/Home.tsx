@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
 import TaskInput from '../components/TaskInput';
@@ -24,8 +25,8 @@ import { useGoogleAuth } from '../hooks/useGoogleAuth';
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal, _setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [_userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
 
   // State for controlled TaskInput
