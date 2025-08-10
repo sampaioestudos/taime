@@ -18,9 +18,9 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
     <input {...props} className="w-full bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors" />
 );
 
-const baseButtonClasses = "px-5 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors";
+const baseButtonClasses = "px-5 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors disabled:opacity-60 disabled:cursor-not-allowed";
 const primaryButtonClasses = `${baseButtonClasses} bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-500`;
-const secondaryButtonClasses = `${baseButtonClasses} bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500 disabled:opacity-60 disabled:cursor-not-allowed`;
+const secondaryButtonClasses = `${baseButtonClasses} bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500`;
 const destructiveButtonClasses = `${baseButtonClasses} bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-500`;
 
 
@@ -43,6 +43,7 @@ const SettingsPage: React.FC = () => {
   const [jiraDomain, setJiraDomain] = useState('');
   const [jiraEmail, setJiraEmail] = useState('');
   const [jiraApiToken, setJiraApiToken] = useState('');
+  const [jiraProjectKey, setJiraProjectKey] = useState('');
   const [isTestingJira, setIsTestingJira] = useState(false);
   const [jiraTestStatus, setJiraTestStatus] = useState<'success' | 'error' | null>(null);
 
@@ -54,13 +55,14 @@ const SettingsPage: React.FC = () => {
           setJiraDomain(jiraConfig.domain);
           setJiraEmail(jiraConfig.email);
           setJiraApiToken(jiraConfig.apiToken);
+          setJiraProjectKey(jiraConfig.projectKey || '');
       }
   }, [jiraConfig]);
   
   // Reset test status if credentials change
   useEffect(() => {
       setJiraTestStatus(null);
-  }, [jiraDomain, jiraEmail, jiraApiToken]);
+  }, [jiraDomain, jiraEmail, jiraApiToken, jiraProjectKey]);
 
 
   const handleSaveGeneralSettings = (e: React.FormEvent) => {
@@ -72,10 +74,11 @@ const SettingsPage: React.FC = () => {
   const handleSaveJiraConfig = (e: React.FormEvent) => {
     e.preventDefault();
     if(jiraDomain.trim() && jiraEmail.trim() && jiraApiToken.trim()) {
-        const newConfig = {
+        const newConfig: JiraConfig = {
             domain: jiraDomain.trim(),
             email: jiraEmail.trim(),
             apiToken: jiraApiToken.trim(),
+            projectKey: jiraProjectKey.trim().toUpperCase() || undefined,
         };
         setJiraConfig(newConfig);
         addToast(t('jiraConfigSaved'), 'success');
@@ -85,7 +88,7 @@ const SettingsPage: React.FC = () => {
   }
 
   const handleTestJiraConnection = async () => {
-    const config = {
+    const config: JiraConfig = {
         domain: jiraDomain.trim(),
         email: jiraEmail.trim(),
         apiToken: jiraApiToken.trim(),
@@ -125,6 +128,8 @@ const SettingsPage: React.FC = () => {
         setHistory({});
         setTasks([]);
         setUserProgress({ points: 0, level: 1 });
+        signOut(); // Also sign out from Google
+        setJiraConfig(null); // Clear Jira config
         addToast(t('dataClearedSuccess'), 'success');
     }
   };
@@ -142,7 +147,7 @@ const SettingsPage: React.FC = () => {
         <form onSubmit={handleSaveGeneralSettings} className="space-y-8">
             <Card>
               <h2 className="text-xl font-semibold text-cyan-400">{t('weeklyGoalTitle')}</h2>
-              <p className="text-gray-400 mt-1 mb-4">{t('weeklyGoalDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4">{t('weeklyGoalDescription')}</p>
               
               <div className="flex items-center gap-4">
                 <input
@@ -154,13 +159,13 @@ const SettingsPage: React.FC = () => {
                   className="w-24 bg-slate-800 text-slate-200 text-center border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   aria-label={t('hoursPerWeek')}
                 />
-                <span className="text-gray-300">{t('hoursPerWeek')}</span>
+                <span className="text-slate-300">{t('hoursPerWeek')}</span>
               </div>
             </Card>
           
             <Card>
               <h2 className="text-xl font-semibold text-cyan-400">{t('realtimeInsightsTitle')}</h2>
-              <p className="text-gray-400 mt-1 mb-4 max-w-md">{t('realtimeInsightsDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4 max-w-md">{t('realtimeInsightsDescription')}</p>
               
               <label htmlFor="insights-toggle" className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -192,10 +197,10 @@ const SettingsPage: React.FC = () => {
               <h2 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
                   <CalendarIcon className="w-6 h-6"/> {t('googleCalendarTitle')}
               </h2>
-              <p className="text-gray-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
                 {isSignedIn ? (
                     <div className="flex items-center justify-between">
-                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.email || ''})}</p>
+                         <p className="text-sm text-slate-300">{t('connectedAs', {email: user?.email || ''})}</p>
                          <button onClick={signOut} className={destructiveButtonClasses}>
                              {t('disconnectGoogle')}
                          </button>
@@ -216,26 +221,24 @@ const SettingsPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
                     <JiraIcon className="w-5 h-5"/>{t('jiraIntegrationTitle')}
                 </h2>
-                <p className="text-gray-400 mt-1 mb-4">{t('jiraIntegrationDescription')}</p>
+                <p className="text-slate-400 mt-1 mb-4">{t('jiraIntegrationDescription')}</p>
                 <form onSubmit={handleSaveJiraConfig} className="space-y-4">
                     <Input type="text" value={jiraDomain} onChange={e => setJiraDomain(e.target.value)} placeholder={t('jiraDomain')} required />
                     <Input type="email" value={jiraEmail} onChange={e => setJiraEmail(e.target.value)} placeholder={t('jiraEmail')} required />
-                    <div>
-                        <Input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} required />
-                        <p className="text-xs text-gray-500 mt-1">{t('jiraApiTokenHelp')}</p>
+                    <Input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} required />
+                     <div>
+                        <Input type="text" value={jiraProjectKey} onChange={e => setJiraProjectKey(e.target.value)} placeholder={t('jiraProjectKey')} />
+                        <p className="text-xs text-slate-500 mt-1">{t('jiraProjectKeyHelp')}</p>
                     </div>
                     <div className="flex items-center gap-4 pt-2">
-                         <button
-                            type="submit"
-                            className={primaryButtonClasses}
-                        >
+                         <button type="submit" className={primaryButtonClasses} >
                             {t('saveJiraConfig')}
                         </button>
                          <button
                             type="button"
                             onClick={handleTestJiraConnection}
                             disabled={isTestingJira}
-                            className={`${secondaryButtonClasses} flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait`}
+                            className={`${secondaryButtonClasses} flex items-center gap-2`}
                         >
                             {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
                         </button>
@@ -252,8 +255,8 @@ const SettingsPage: React.FC = () => {
 
         {/* Data Management */}
         <Card>
-            <h2 className="text-xl font-semibold text-red-400">{t('dataManagementTitle')}</h2>
-            <p className="text-gray-400 mt-1 mb-4">{t('clearDataDescription')}</p>
+            <h2 className="text-xl font-semibold text-rose-400">{t('dataManagementTitle')}</h2>
+            <p className="text-slate-400 mt-1 mb-4">{t('clearDataDescription')}</p>
             <button
                 onClick={handleClearData}
                 className={destructiveButtonClasses}

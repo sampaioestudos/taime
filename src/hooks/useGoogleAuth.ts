@@ -59,11 +59,12 @@ export const useGoogleAuth = () => {
     // Step 3: Load GIS script and initialize token client
     useEffect(() => {
         if (gisLoaded.current || !GOOGLE_CLIENT_ID) {
+            // If no client ID is present, we can consider auth 'ready' but it will fail on click.
+            // This prevents the button from being permanently disabled.
             if (!GOOGLE_CLIENT_ID) {
-                // If no client ID is present, we can consider auth 'ready' but it will fail on click.
-                // This prevents the button from being permanently disabled.
-                setIsAuthReady(true);
+              console.warn("Google Client ID is not set. Google Sign-In will not function.");
             }
+            setIsAuthReady(true);
             return;
         }
 
@@ -131,7 +132,8 @@ export const useGoogleAuth = () => {
 
     const signIn = () => {
         if (tokenClient) {
-            tokenClient.requestAccessToken({ prompt: '' });
+            // Prompt for consent if needed, or just get the token
+            tokenClient.requestAccessToken({ prompt: 'consent' });
         } else {
             console.error("Google Identity Services not initialized yet. Please wait or check configuration.");
         }

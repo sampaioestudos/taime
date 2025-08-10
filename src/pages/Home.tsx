@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig } from '../types';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
 import TaskInput from '../components/TaskInput';
 import TaskList from '../components/TaskList';
 import Report from '../components/Report';
@@ -16,7 +16,20 @@ import { useRealtimeInsights } from '../hooks/useRealtimeInsights';
 import ExportImportModal from '../components/ExportImportModal';
 import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/exportImportService';
 import { useToast } from '../components/Toast';
-import { logWorkToJira } from '../services/jiraService';
+import { logWorkToJira, searchJiraIssues } from '../services/jiraService';
+
+const useDebounce = <T>(value: T, delay: number): T => {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+    return debouncedValue;
+};
 
 
 const HomePage: React.FC = () => {
@@ -25,7 +38,6 @@ const HomePage: React.FC = () => {
   const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
   const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
-
 
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -40,6 +52,17 @@ const HomePage: React.FC = () => {
   const [isAnalyzingHistory, setIsAnalyzingHistory] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   
+  // State for TaskInput
+  const [taskName, setTaskName] = useState('');
+  const [jiraIssueKey, setJiraIssueKey] = useState('');
+  
+  // State for Jira Search
+  const [jiraSearchResults, setJiraSearchResults] = useState<JiraIssue[]>([]);
+  const [isJiraSearching, setIsJiraSearching] = useState(false);
+  const debouncedSearchTerm = useDebounce(taskName, 300);
+
+  const isJiraConfigured = useMemo(() => !!(jiraConfig?.domain && jiraConfig.email && jiraConfig.apiToken), [jiraConfig]);
+
   const activeTask = tasks.find(t => t.id === activeTaskId) || null;
   useRealtimeInsights({ activeTask, isEnabled: goal?.realtimeInsightsEnabled ?? false });
   
@@ -62,8 +85,25 @@ const HomePage: React.FC = () => {
       }
     };
   }, [activeTaskId, setTasks]);
+  
+  // Effect for Jira searching
+  useEffect(() => {
+    const performSearch = async () => {
+        if (isJiraConfigured && debouncedSearchTerm.length > 2 && !jiraIssueKey) {
+            setIsJiraSearching(true);
+            const results = await searchJiraIssues(jiraConfig!, debouncedSearchTerm);
+            setJiraSearchResults(results);
+            setIsJiraSearching(false);
+        } else {
+            setJiraSearchResults([]);
+        }
+    };
+    performSearch();
+  }, [debouncedSearchTerm, isJiraConfigured, jiraConfig, jiraIssueKey]);
 
-  const handleAddTask = (taskName: string, jiraIssueKey?: string) => {
+
+  const handleAddTask = (e: React.FormEvent) => {
+    e.preventDefault();
     if (taskName.trim() === '') return;
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -75,6 +115,15 @@ const HomePage: React.FC = () => {
       timeLoggedToJiraSeconds: 0,
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
+    setTaskName('');
+    setJiraIssueKey('');
+    setJiraSearchResults([]);
+  };
+  
+  const handleJiraIssueSelect = (issue: JiraIssue) => {
+    setTaskName(issue.summary);
+    setJiraIssueKey(issue.key);
+    setJiraSearchResults([]);
   };
 
   const handleTaskClick = (taskId: string) => {
@@ -265,7 +314,7 @@ const HomePage: React.FC = () => {
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-gray-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -283,7 +332,17 @@ const HomePage: React.FC = () => {
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-slate-900/70 p-6 rounded-xl shadow-lg ring-1 ring-slate-800">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
-            <TaskInput onAddTask={handleAddTask} />
+            <TaskInput
+              taskName={taskName}
+              jiraIssueKey={jiraIssueKey}
+              onTaskNameChange={setTaskName}
+              onJiraIssueKeyChange={setJiraIssueKey}
+              onSubmit={handleAddTask}
+              jiraIssues={jiraSearchResults}
+              isJiraSearching={isJiraSearching}
+              onJiraIssueSelect={handleJiraIssueSelect}
+              isJiraConfigured={isJiraConfigured}
+            />
             <TaskList
               tasks={tasks}
               onTaskClick={handleTaskClick}

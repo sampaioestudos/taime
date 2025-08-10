@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { XIcon } from './icons';
 import { useTranslation } from '../i18n';
@@ -30,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
           aria-label={t('closeButton')}
         >
           <XIcon className="h-6 w-6" />

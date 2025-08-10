@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { AnalysisResult } from '../types';
@@ -27,9 +25,9 @@ const EmptyState: React.FC<{ totalTasksTodayCount: number }> = ({ totalTasksToda
         <div className="text-center p-8 border-2 border-dashed border-slate-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
             <h3 className="text-lg font-semibold text-white">{t('reportEmptyTitle')}</h3>
             {totalTasksTodayCount > 0 ? (
-                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
+                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
             ) : (
-                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
+                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
             )}
         </div>
     );
@@ -86,7 +84,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
         </h3>
         <ul className="space-y-2">
           {analysisResult.insights.map((insight, index) => (
-            <li key={index} className="bg-slate-900/70 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
+            <li key={index} className="bg-slate-900/70 p-3 rounded-md text-slate-300 border-l-4 border-cyan-500">
               {insight}
             </li>
           ))}
@@ -100,9 +98,9 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
             <div key={index} className="bg-slate-900/70 p-4 rounded-lg">
                 <div className="flex justify-between items-baseline mb-2">
                     <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
-                    <span className="text-sm font-mono text-gray-400">{formatTime(category.totalTime)}</span>
+                    <span className="text-sm font-mono text-slate-400">{formatTime(category.totalTime)}</span>
                 </div>
-                <ul className="list-disc list-inside text-gray-300">
+                <ul className="list-disc list-inside text-slate-300">
                     {category.tasks.map((task, taskIndex) => (
                         <li key={taskIndex}>{task}</li>
                     ))}

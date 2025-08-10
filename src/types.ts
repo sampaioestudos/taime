@@ -45,15 +45,26 @@ export interface JiraConfig {
     projectKey?: string;
 }
 
+export interface JiraIssueType {
+    name: string;
+    iconUrl: string;
+}
+
+export interface JiraStatus {
+    name: string;
+}
+
 export interface JiraIssue {
     key: string;
     summary: string;
+    issuetype: JiraIssueType;
+    status: JiraStatus;
 }
+
 
 declare global {
   interface Window {
     gapi: any;
-    google: any;
-    tokenClient: any;
+    google: any; // Google Identity Services
   }
 }

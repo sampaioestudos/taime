@@ -74,14 +74,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           value={editedName}
           onChange={(e) => setEditedName(e.target.value)}
           placeholder={t('taskNamePlaceholder')}
-          className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
+          className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-base"
           autoFocus
         />
         <textarea
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
             placeholder={t('taskDescriptionPlaceholder')}
-            className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
+            className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm resize-y"
             rows={2}
         />
         <input
@@ -89,7 +89,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
           value={editedJiraKey}
           onChange={(e) => setEditedJiraKey(e.target.value.toUpperCase())}
           placeholder={t('jiraIssueKeyPlaceholder')}
-          className="flex-grow bg-slate-700 text-gray-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
+          className="flex-grow bg-slate-700 text-slate-100 border-none rounded-md px-3 py-1.5 focus:outline-none w-full text-sm"
            onKeyDown={handleKeyDown}
         />
         <div className="flex items-center gap-2 self-end mt-1">
@@ -116,10 +116,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     >
       <div className="flex flex-col gap-1 truncate flex-grow">
          <div className="flex items-center gap-2">
-            <span className="font-medium text-gray-100 truncate">{task.name}</span>
+            <span className="font-medium text-slate-100 truncate">{task.name}</span>
             {task.jiraIssueKey && <span className="text-xs bg-blue-900/80 text-blue-300 font-mono px-1.5 py-0.5 rounded">{task.jiraIssueKey}</span>}
          </div>
-         {task.description && <p className="text-sm text-gray-400 truncate">{task.description}</p>}
+         {task.description && <p className="text-sm text-slate-400 truncate">{task.description}</p>}
       </div>
      
       <div className="flex items-center gap-3 shrink-0">
@@ -129,10 +129,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
                     <JiraIcon className="h-4 w-4" />
                 </button>
             )}
-           <button onClick={handleEditClick} className="p-1 text-gray-400 hover:text-white" aria-label={t('editTask')}>
+           <button onClick={handleEditClick} className="p-1 text-slate-400 hover:text-white" aria-label={t('editTask')}>
              <EditIcon className="h-4 w-4" />
            </button>
-           <button onClick={handleDeleteClick} className="p-1 text-red-400 hover:text-red-300" aria-label={t('deleteTask')}>
+           <button onClick={handleDeleteClick} className="p-1 text-rose-400 hover:text-rose-300" aria-label={t('deleteTask')}>
              <TrashIcon className="h-4 w-4" />
            </button>
          </div>
