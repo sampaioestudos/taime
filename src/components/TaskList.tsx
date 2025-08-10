@@ -19,8 +19,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, o
 
   if (tasks.length === 0) {
     return (
-      <div className="text-center py-10 px-4 bg-slate-900/70 rounded-lg">
-        <p className="text-slate-400">{t('noTasks')}</p>
+      <div className="text-center py-10 px-4 bg-gray-800 rounded-lg">
+        <p className="text-gray-400">{t('noTasks')}</p>
       </div>
     );
   }

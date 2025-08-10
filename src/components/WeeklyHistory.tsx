@@ -30,26 +30,26 @@ const WeeklyHistory: React.FC<WeeklyHistoryProps> = ({ history, goal, onAnalyzeD
 
   return (
     <div>
-       <h3 className="text-xl font-semibold text-slate-100 mb-4 flex items-center gap-2">
+       <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
         <HistoryIcon className="h-6 w-6 text-cyan-400" />
         {t('weeklyHistory')}
       </h3>
        {goal && goal.weeklyHours > 0 && (
         <div className="mb-6">
           <div className="flex justify-between items-baseline mb-1">
-             <h4 className="text-sm font-semibold text-slate-200">{t('goalProgress')}</h4>
-             <span className="text-xs font-mono text-slate-400">{formatTime(totalTimeInWeek)} / {formatTime(goalSeconds)}</span>
+             <h4 className="text-sm font-semibold text-gray-200">{t('goalProgress')}</h4>
+             <span className="text-xs font-mono text-gray-400">{formatTime(totalTimeInWeek)} / {formatTime(goalSeconds)}</span>
           </div>
-          <div className="w-full bg-slate-700/80 rounded-full h-2.5">
+          <div className="w-full bg-gray-700/80 rounded-full h-2.5">
             <div
-              className="bg-emerald-500 h-2.5 rounded-full transition-all duration-500 ease-out"
+              className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${goalProgressPercentage}%` }}
             ></div>
           </div>
         </div>
       )}
 
-      <div className="divide-y divide-slate-800">
+      <div className="divide-y divide-gray-700/50">
         {weekDays.map(({ dateISO, dayKey }, index) => {
           const dailyTotal = dailyTotals[index];
           const percentage = (dailyTotal / maxTimeInDay) * 100;
@@ -57,10 +57,10 @@ const WeeklyHistory: React.FC<WeeklyHistoryProps> = ({ history, goal, onAnalyzeD
 
           return (
             <div key={dateISO} className="py-3">
-              <div className="flex items-center justify-between gap-4">
-                <span className="font-semibold text-slate-300 w-10">{t(dayKey)}</span>
-                <div className="flex-grow ml-2">
-                     <div className="w-full bg-slate-700/80 rounded-full h-2">
+              <div className="flex items-center justify-between gap-4 mb-2">
+                <span className="font-semibold text-gray-300 w-10">{t(dayKey)}</span>
+                <div className="flex-grow">
+                     <div className="w-full bg-gray-700/80 rounded-full h-2">
                         <div
                         className="bg-cyan-500 h-2 rounded-full transition-all duration-500 ease-out"
                         style={{ width: `${percentage}%` }}
@@ -68,7 +68,7 @@ const WeeklyHistory: React.FC<WeeklyHistoryProps> = ({ history, goal, onAnalyzeD
                     </div>
                 </div>
                 <div className="flex items-center gap-2 w-32 justify-end">
-                  <span className="font-mono text-slate-400 text-sm">
+                  <span className="font-mono text-gray-400 text-sm">
                     {dailyTotal > 0 ? formatTime(dailyTotal) : t('noTimeTracked')}
                   </span>
                   <div className="w-8 h-8 flex items-center justify-center">

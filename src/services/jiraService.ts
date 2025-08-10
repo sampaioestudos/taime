@@ -1,10 +1,8 @@
-import { JiraConfig, JiraIssue } from '../types';
+import { JiraConfig } from '../types';
 
 /**
  * Converts seconds to Jira's time tracking format (e.g., '1h 30m').
  * Minimum value is '1m'.
- * @param totalSeconds - The total seconds to convert.
- * @returns The formatted time string for Jira.
  */
 const formatSecondsForJira = (totalSeconds: number): string => {
     if (totalSeconds < 60) {
@@ -25,14 +23,6 @@ const formatSecondsForJira = (totalSeconds: number): string => {
     return timeString.trim();
 };
 
-/**
- * A proxy function to call the Jira API via the serverless function.
- * @param config - The user's Jira configuration.
- * @param method - The HTTP method for the Jira API.
- * @param path - The API path (e.g., 'myself').
- * @param body - The request body for POST requests.
- * @returns The fetch Response object.
- */
 const callJiraApi = async (config: JiraConfig, method: 'GET' | 'POST', path: string, body?: any) => {
     const response = await fetch('/api/jira', {
         method: 'POST', // The proxy endpoint is always POST
@@ -58,11 +48,6 @@ const callJiraApi = async (config: JiraConfig, method: 'GET' | 'POST', path: str
     return response;
 };
 
-/**
- * Tests the connection to the Jira API using the provided credentials.
- * @param config - The user's Jira configuration.
- * @returns A boolean indicating if the connection was successful.
- */
 export const testJiraConnection = async (config: JiraConfig): Promise<boolean> => {
     try {
         const response = await callJiraApi(config, 'GET', 'myself');
@@ -73,67 +58,11 @@ export const testJiraConnection = async (config: JiraConfig): Promise<boolean> =
     }
 };
 
-/**
- * Searches for Jira issues based on a search term.
- * @param config - The user's Jira configuration, may include a projectKey.
- * @param searchTerm - The term to search for in issue summary, description, or key.
- * @returns A promise that resolves to an array of Jira issues.
- */
-export const searchJiraIssues = async (config: JiraConfig, searchTerm: string): Promise<JiraIssue[]> => {
-    // Sanitize searchTerm to prevent JQL injection by removing problematic characters.
-    const sanitizedSearchTerm = searchTerm.replace(/['";]/g, '').trim();
-    if (!sanitizedSearchTerm) return [];
-
-    let jql = `(summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm.toUpperCase()}")`;
-    if (config.projectKey) {
-        jql = `project = '${config.projectKey.toUpperCase()}' AND ${jql}`;
-    }
-    jql += ` ORDER BY updated DESC`;
-
-    const bodyData = {
-        jql,
-        maxResults: 10,
-        fields: ["summary", "key", "issuetype", "status"]
-    };
-
-    try {
-        const response = await callJiraApi(config, 'POST', 'search', bodyData);
-        const data = await response.json();
-        return (data.issues || []).map((issue: any) => ({
-            key: issue.key,
-            summary: issue.fields.summary,
-            issuetype: {
-                name: issue.fields.issuetype.name,
-                iconUrl: issue.fields.issuetype.iconUrl,
-            },
-            status: {
-                name: issue.fields.status.name,
-            }
-        }));
-    } catch (error) {
-        console.error('Jira search failed:', error);
-        return [];
-    }
-};
-
-
-/**
- * Logs work to a specific Jira issue.
- * @param config - The user's Jira configuration.
- * @param issueKey - The key of the issue to log time against (e.g., 'PROJ-123').
- * @param timeSpentSeconds - The amount of time in seconds to log.
- * @returns The fetch Response object from the API call.
- */
 export const logWorkToJira = async (
     config: JiraConfig,
     issueKey: string,
     timeSpentSeconds: number
 ): Promise<Response> => {
-    // Validate issueKey format before making the API call
-    if (!/^[A-Z][A-Z0-9]+-\d+$/.test(issueKey)) {
-        throw new Error('Invalid Jira issue key format');
-    }
-
     const bodyData = {
         timeSpent: formatSecondsForJira(timeSpentSeconds),
         comment: {
@@ -145,7 +74,7 @@ export const logWorkToJira = async (
                     content: [
                         {
                             type: 'text',
-                            text: `Time logged from taime app on ${new Date().toLocaleString()}`
+                            text: 'Time logged from taime app.'
                         }
                     ]
                 }

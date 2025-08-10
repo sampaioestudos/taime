@@ -49,7 +49,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileLoaded }) => {
   };
 
   const baseClasses = "flex flex-col items-center justify-center w-full h-32 px-4 transition-colors duration-200 ease-in-out border-2 border-dashed rounded-lg cursor-pointer";
-  const inactiveClasses = "border-slate-600 bg-slate-800 hover:bg-slate-700/70";
+  const inactiveClasses = "border-gray-500 bg-gray-700 hover:bg-gray-600/70";
   const activeClasses = "border-cyan-400 bg-cyan-900/50";
 
   return (
@@ -61,8 +61,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileLoaded }) => {
     >
       <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-          <ImportIcon className={`w-8 h-8 mb-3 ${isDragging ? 'text-cyan-400' : 'text-slate-400'}`} />
-          <p className={`text-sm ${isDragging ? 'text-cyan-300' : 'text-slate-400'}`}>
+          <ImportIcon className={`w-8 h-8 mb-3 ${isDragging ? 'text-cyan-400' : 'text-gray-400'}`} />
+          <p className={`text-sm ${isDragging ? 'text-cyan-300' : 'text-gray-400'}`}>
             <span className="font-semibold">{t('dropFileHere')}</span>
           </p>
         </div>

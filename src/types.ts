@@ -42,29 +42,10 @@ export interface JiraConfig {
     domain: string;
     email: string;
     apiToken: string;
-    projectKey?: string;
 }
-
-export interface JiraIssue {
-  key: string;
-  summary: string;
-  issuetype: {
-      name: string;
-      iconUrl: string;
-  };
-  status: {
-      name: string;
-  };
-}
-
 
 declare global {
   interface Window {
     gapi: any;
-    google?: {
-      accounts: {
-        oauth2: any;
-      };
-    };
   }
 }

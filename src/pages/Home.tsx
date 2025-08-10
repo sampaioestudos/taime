@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig } from '../types';
 import TaskInput from '../components/TaskInput';
 import TaskList from '../components/TaskList';
 import Report from '../components/Report';
@@ -16,27 +16,14 @@ import { useRealtimeInsights } from '../hooks/useRealtimeInsights';
 import ExportImportModal from '../components/ExportImportModal';
 import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/exportImportService';
 import { useToast } from '../components/Toast';
-import { logWorkToJira, searchJiraIssues } from '../services/jiraService';
-
-const useDebounce = <T,>(value: T, delay: number): T => {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value, delay]);
-    return debouncedValue;
-};
+import { logWorkToJira } from '../services/jiraService';
 
 
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
 
 
@@ -52,17 +39,6 @@ const HomePage: React.FC = () => {
   const [historicalAnalysis, setHistoricalAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzingHistory, setIsAnalyzingHistory] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  
-  // State for TaskInput (now controlled)
-  const [taskName, setTaskName] = useState('');
-  const [jiraIssueKey, setJiraIssueKey] = useState('');
-  
-  // State for Jira Search
-  const [jiraSearchResults, setJiraSearchResults] = useState<JiraIssue[]>([]);
-  const [isJiraSearching, setIsJiraSearching] = useState(false);
-  const debouncedSearchTerm = useDebounce(taskName, 300);
-
-  const isJiraConfigured = useMemo(() => !!(jiraConfig?.domain && jiraConfig.email && jiraConfig.apiToken), [jiraConfig]);
   
   const activeTask = tasks.find(t => t.id === activeTaskId) || null;
   useRealtimeInsights({ activeTask, isEnabled: goal?.realtimeInsightsEnabled ?? false });
@@ -87,47 +63,18 @@ const HomePage: React.FC = () => {
     };
   }, [activeTaskId, setTasks]);
 
-  // Effect for Jira searching
-  useEffect(() => {
-    const performSearch = async () => {
-        // Only search if the term is long enough and no specific issue key is already set
-        if (isJiraConfigured && debouncedSearchTerm.length > 2 && !jiraIssueKey) {
-            setIsJiraSearching(true);
-            const results = await searchJiraIssues(jiraConfig!, debouncedSearchTerm);
-            setJiraSearchResults(results);
-            setIsJiraSearching(false);
-        } else {
-            setJiraSearchResults([]);
-        }
-    };
-    performSearch();
-  }, [debouncedSearchTerm, isJiraConfigured, jiraConfig, jiraIssueKey]);
-
-  const handleAddTask = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddTask = (taskName: string, jiraIssueKey?: string) => {
     if (taskName.trim() === '') return;
-    
     const newTask: Task = {
       id: crypto.randomUUID(),
-      name: taskName.trim(),
+      name: taskName,
       description: '',
       elapsedSeconds: 0,
       syncedToCalendar: false,
-      jiraIssueKey: jiraIssueKey.trim() || undefined,
+      jiraIssueKey: jiraIssueKey || undefined,
       timeLoggedToJiraSeconds: 0,
     };
-
     setTasks(prevTasks => [...prevTasks, newTask]);
-    // Reset inputs
-    setTaskName('');
-    setJiraIssueKey('');
-    setJiraSearchResults([]);
-  };
-  
-  const handleJiraIssueSelect = (issue: JiraIssue) => {
-    setTaskName(issue.summary);
-    setJiraIssueKey(issue.key);
-    setJiraSearchResults([]);
   };
 
   const handleTaskClick = (taskId: string) => {
@@ -318,7 +265,7 @@ const HomePage: React.FC = () => {
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -326,7 +273,7 @@ const HomePage: React.FC = () => {
             <LanguageSwitcher />
             <button
               onClick={handleResetDay}
-              className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
             >
               {t('resetDay')}
             </button>
@@ -334,17 +281,9 @@ const HomePage: React.FC = () => {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-slate-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+          <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
-            <TaskInput
-              taskName={taskName}
-              onTaskNameChange={setTaskName}
-              onSubmit={handleAddTask}
-              jiraIssues={jiraSearchResults}
-              isJiraSearching={isJiraSearching}
-              onJiraIssueSelect={handleJiraIssueSelect}
-              isJiraConfigured={isJiraConfigured}
-            />
+            <TaskInput onAddTask={handleAddTask} />
             <TaskList
               tasks={tasks}
               onTaskClick={handleTaskClick}
@@ -356,23 +295,23 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-8">
-            <div className="bg-slate-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-semibold text-cyan-400">{t('productivityAnalysis')}</h2>
                 <button
                   onClick={handleAnalyze}
                   disabled={isAnalyzing || allTasksForTodayCount === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 disabled:bg-slate-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-all duration-200"
                 >
                   <BrainCircuitIcon className="h-5 w-5"/>
                   {isAnalyzing ? t('analyzingButton') : t('analyzeButton')}
                 </button>
               </div>
-              {error && <p className="text-rose-400 bg-rose-900/50 p-3 rounded-md mb-4">{error}</p>}
+              {error && <p className="text-red-400 bg-red-900/50 p-3 rounded-md mb-4">{error}</p>}
               <Report analysisResult={analysisResult} isLoading={isAnalyzing} totalTasksTodayCount={allTasksForTodayCount} />
             </div>
 
-            <div className="bg-slate-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <WeeklyHistory
                 history={history}
                 goal={goal}

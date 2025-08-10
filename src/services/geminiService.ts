@@ -3,7 +3,7 @@ import { Task, AnalysisResult } from '../types';
 import { formatTime } from "../utils/time";
 
 if (!process.env.API_KEY) {
-    console.error("API_KEY environment variable not set. Please create a .env.local file and add VITE_GEMINI_API_KEY.");
+    console.error("API_KEY environment variable not set.");
 }
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
@@ -99,10 +99,7 @@ export const getTaskAnalysis = async (tasks: Task[], language: string): Promise<
       },
     });
 
-    const jsonText = (response.text || "").trim();
-    if (!jsonText) {
-        throw new Error("Empty response from API.");
-    }
+    const jsonText = response.text.trim();
     const result = JSON.parse(jsonText);
     
     if (!result.categories || !result.insights) {
@@ -133,7 +130,7 @@ export const getRealtimeInsight = async (taskName: string, elapsedSeconds: numbe
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text?.trim() ?? "";
+        return response.text.trim();
     } catch (error) {
         console.error("Error getting real-time insight:", error);
         return ""; // Return empty string on failure

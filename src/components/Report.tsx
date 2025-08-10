@@ -1,6 +1,7 @@
 
+
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { AnalysisResult } from '../types';
 import { formatTime } from '../utils/time';
 import { LightBulbIcon } from './icons';
@@ -12,7 +13,7 @@ interface ReportProps {
   totalTasksTodayCount: number;
 }
 
-const COLORS = ['#06b6d4', '#14b8a6', '#34d399', '#f59e0b', '#8b5cf6', '#a7f3d0'];
+const COLORS = ['#06b6d4', '#34d399', '#f59e0b', '#8b5cf6', '#ec4899', '#6366f1'];
 
 const LoadingSpinner: React.FC = () => (
   <div className="flex justify-center items-center h-full py-10 min-h-[300px]">
@@ -23,12 +24,12 @@ const LoadingSpinner: React.FC = () => (
 const EmptyState: React.FC<{ totalTasksTodayCount: number }> = ({ totalTasksTodayCount }) => {
     const { t } = useTranslation();
     return (
-        <div className="text-center p-8 border-2 border-dashed border-slate-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
+        <div className="text-center p-8 border-2 border-dashed border-gray-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
             <h3 className="text-lg font-semibold text-white">{t('reportEmptyTitle')}</h3>
             {totalTasksTodayCount > 0 ? (
-                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
+                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
             ) : (
-                <p className="text-slate-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
+                <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithoutTasks')}</p>
             )}
         </div>
     );
@@ -54,25 +55,25 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     <div className="space-y-8 animate-fade-in">
       <div>
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
-        <div className="h-80 w-full bg-slate-900/70 rounded-lg p-2 sm:p-4">
+        <div className="h-72 w-full bg-gray-800 rounded-lg p-2 sm:p-4">
            <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+            <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
               <Pie
                 data={chartData}
                 cx="50%"
-                cy="45%"
+                cy="50%"
                 labelLine={false}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
-                {chartData.map((_, index) => (
+                {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-slate-800 !border-slate-700 rounded-md" />
-              <Legend verticalAlign="bottom" align="center" />
+              <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700 !border-gray-600 rounded-md" />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -85,7 +86,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
         </h3>
         <ul className="space-y-2">
           {analysisResult.insights.map((insight, index) => (
-            <li key={index} className="bg-slate-900/70 p-3 rounded-md text-slate-300 border-l-4 border-cyan-500">
+            <li key={index} className="bg-gray-800 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
               {insight}
             </li>
           ))}
@@ -96,12 +97,12 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportCategoriesTitle')}</h3>
         <div className="space-y-4">
           {analysisResult.categories.map((category, index) => (
-            <div key={index} className="bg-slate-900/70 p-4 rounded-lg">
+            <div key={index} className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex justify-between items-baseline mb-2">
                     <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
-                    <span className="text-sm font-mono text-slate-400">{formatTime(category.totalTime)}</span>
+                    <span className="text-sm font-mono text-gray-400">{formatTime(category.totalTime)}</span>
                 </div>
-                <ul className="list-disc list-inside text-slate-300">
+                <ul className="list-disc list-inside text-gray-300">
                     {category.tasks.map((task, taskIndex) => (
                         <li key={taskIndex}>{task}</li>
                     ))}

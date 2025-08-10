@@ -1,147 +1,81 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useLocalStorage from './useLocalStorage';
 
+// These are now injected by Vite from your .env.local file
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
+
+// The scopes needed for Google Calendar API.
+const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
 export const useGoogleAuth = () => {
-    const [tokenClient, setTokenClient] = useState<any>(null);
-    const [gapiReady, setGapiReady] = useState(false);
-    const [isAuthReady, setIsAuthReady] = useState(false);
-
+    const [gapi, setGapi] = useState<any>(null);
+    const [googleAuth, setGoogleAuth] = useState<any>(null);
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [user, setUser] = useLocalStorage<any>('taime-gauth-user', null);
-    const [accessToken, setAccessToken] = useLocalStorage<string | null>('taime-gauth-token', null);
 
-    const gapiLoaded = useRef(false);
-    const gisLoaded = useRef(false);
+    const updateSigninStatus = useCallback((signedIn: boolean) => {
+        setIsSignedIn(signedIn);
+        if (signedIn) {
+            setUser(googleAuth.currentUser.get());
+        } else {
+            setUser(null);
+        }
+    }, [googleAuth, setIsSignedIn, setUser]);
 
-    const signOut = useCallback(() => {
-        if (accessToken && window.google?.accounts?.oauth2) {
-            window.google.accounts.oauth2.revoke(accessToken, () => {});
-        }
-        setAccessToken(null);
-        setIsSignedIn(false);
-        setUser(null);
-        if (window.gapi?.client) {
-            window.gapi.client.setToken(null);
-        }
-    }, [accessToken, setAccessToken, setIsSignedIn, setUser]);
-    
-    // Step 1: Initialize GAPI client for API calls
-    const initGapiClient = useCallback(async () => {
-        try {
-            await window.gapi.client.init({
-                apiKey: GOOGLE_API_KEY,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            });
-            setGapiReady(true);
-        } catch (error) {
-            console.error("Error initializing GAPI client", error);
-        }
-    }, []);
-
-    // Step 2: Load GAPI script
     useEffect(() => {
-        if (gapiLoaded.current || !GOOGLE_API_KEY) return;
-        
-        const script = document.createElement('script');
-        script.src = 'https://apis.google.com/js/api.js';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => window.gapi.load('client', initGapiClient);
-        document.body.appendChild(script);
-        gapiLoaded.current = true;
-
-    }, [initGapiClient]);
-
-    // Step 3: Load GIS script and initialize token client
-    useEffect(() => {
-        if (gisLoaded.current || !GOOGLE_CLIENT_ID) {
-            // If no client ID is present, we can consider auth 'ready' but it will fail on click.
-            // This prevents the button from being permanently disabled.
-            if (!GOOGLE_CLIENT_ID) {
-              console.warn("Google Client ID is not set. Google Sign-In will not function.");
-            }
-            setIsAuthReady(true);
+        if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY) {
+            console.error("Google Auth credentials are not configured in your environment variables.");
             return;
         }
 
         const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
+        script.src = 'https://apis.google.com/js/api.js';
         script.async = true;
         script.defer = true;
         script.onload = () => {
-            gisLoaded.current = true;
-            try {
-                const client = window.google!.accounts.oauth2.initTokenClient({
-                    client_id: GOOGLE_CLIENT_ID,
+            window.gapi.load('client:auth2', () => {
+                window.gapi.client.init({
+                    apiKey: GOOGLE_API_KEY,
+                    clientId: GOOGLE_CLIENT_ID,
                     scope: SCOPES,
-                    callback: (tokenResponse: any) => {
-                        if (tokenResponse && tokenResponse.access_token) {
-                            setAccessToken(tokenResponse.access_token);
-                            setIsSignedIn(true);
-                        } else {
-                            console.error("Authentication failed, no access token.", tokenResponse);
-                            signOut();
-                        }
-                    },
-                    error_callback: (error: any) => {
-                        console.error("Authentication error:", error);
-                    }
+                    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+                }).then(() => {
+                    setGapi(window.gapi);
+                    const authInstance = window.gapi.auth2.getAuthInstance();
+                    setGoogleAuth(authInstance);
+                    updateSigninStatus(authInstance.isSignedIn.get());
+                    authInstance.isSignedIn.listen(updateSigninStatus);
+                }).catch((error: any) => {
+                    console.error("Error initializing Google API client", error);
                 });
-                setTokenClient(client);
-            } catch (error) {
-                console.error("Error initializing GIS client", error);
-            } finally {
-                setIsAuthReady(true);
-            }
-        };
-        script.onerror = () => {
-            gisLoaded.current = true;
-            setIsAuthReady(true); // Unblock UI even if script fails to load
-            console.error("Failed to load Google Identity Services script.");
+            });
         };
         document.body.appendChild(script);
 
-    }, [setAccessToken, setIsSignedIn, signOut]);
-
-    // Step 4: When access token changes, set it for GAPI and fetch user info
-    useEffect(() => {
-        const fetchUser = async () => {
-             if (gapiReady && accessToken) {
-                window.gapi.client.setToken({ access_token: accessToken });
-                try {
-                    // Use a more specific user info endpoint
-                    const response = await window.gapi.client.request({
-                        path: 'https://www.googleapis.com/oauth2/v2/userinfo'
-                    });
-                    setUser(response.result);
-                } catch (e: any) {
-                    console.error('Error fetching user profile', e);
-                    if (e.status === 401) { // Token likely expired or revoked
-                        signOut();
-                    }
-                }
+        return () => {
+            if (document.body.contains(script)) {
+              document.body.removeChild(script);
             }
         };
-        fetchUser();
-    }, [gapiReady, accessToken, setUser, signOut]);
-
+    }, [updateSigninStatus]);
 
     const signIn = () => {
-        if (tokenClient) {
-            // Prompt for consent if needed, or just get the token
-            tokenClient.requestAccessToken({ prompt: 'consent' });
+        if (googleAuth) {
+            googleAuth.signIn();
         } else {
-            console.error("Google Identity Services not initialized yet. Please wait or check configuration.");
+            console.error("Google Auth not initialized. Please check your API keys.");
+        }
+    };
+
+    const signOut = () => {
+        if (googleAuth) {
+            googleAuth.signOut();
         }
     };
 
     return {
-        gapi: gapiReady ? window.gapi : null,
-        isAuthReady,
+        gapi,
         isSignedIn,
         user,
         signIn,
