@@ -18,7 +18,7 @@ import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/export
 import { useToast } from '../components/Toast';
 import { logWorkToJira, searchJiraIssues } from '../services/jiraService';
 
-const useDebounce = <T>(value: T, delay: number): T => {
+const useDebounce = <T,>(value: T, delay: number): T => {
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
     useEffect(() => {
         const handler = setTimeout(() => {
