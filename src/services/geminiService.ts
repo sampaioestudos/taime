@@ -101,7 +101,8 @@ export const getTaskAnalysis = async (tasks: Task[], language: string): Promise<
 
     const jsonText = response.text;
     if (!jsonText) {
-        throw new Error("Empty JSON response from API.");
+        // Return a valid empty structure if the API gives no content
+        return { categories: [], insights: [] };
     }
     const result = JSON.parse(jsonText.trim());
     

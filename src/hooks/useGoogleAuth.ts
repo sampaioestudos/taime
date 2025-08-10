@@ -1,16 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
-
-declare global {
-    interface Window {
-        google: any;
-        gapi: any;
-    }
-}
 
 interface UserProfile {
     email: string;
@@ -23,23 +16,36 @@ export const useGoogleAuth = () => {
     const [tokenClient, setTokenClient] = useState<any>(null);
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [userProfile, setUserProfile] = useLocalStorage<UserProfile | null>('taime-gauth-profile', null);
-    
-    const initInProgress = useRef(false);
 
     const initializeGapiClient = useCallback(async () => {
-        try {
-            await window.gapi.client.init({
-                apiKey: GOOGLE_API_KEY,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            });
-            setGapi(window.gapi);
-        } catch (error) {
-            console.error("Error initializing Google API client:", error);
+        await window.gapi.client.init({
+            apiKey: GOOGLE_API_KEY,
+            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+        });
+        setGapi(window.gapi);
+
+        // If a token exists in gapi, it means we are already signed in from a previous session
+        if (window.gapi.client.getToken() !== null) {
+            setIsSignedIn(true);
+            // Optionally fetch profile if not in local storage
+            if (!userProfile) {
+                try {
+                    const profileResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                        headers: { 'Authorization': `Bearer ${window.gapi.client.getToken().access_token}` }
+                    });
+                    if (profileResponse.ok) {
+                        const profile = await profileResponse.json();
+                        setUserProfile({ email: profile.email, name: profile.name, picture: profile.picture });
+                    }
+                } catch (error) {
+                    console.error("Error fetching user profile on init:", error);
+                }
+            }
         }
-    }, []);
+
+    }, [setUserProfile, setIsSignedIn, userProfile]);
 
     const initializeTokenClient = useCallback(() => {
-        if (!window.google || !window.google.accounts) return;
         const client = window.google.accounts.oauth2.initTokenClient({
             client_id: GOOGLE_CLIENT_ID,
             scope: SCOPES,
@@ -47,8 +53,10 @@ export const useGoogleAuth = () => {
                 if (tokenResponse && tokenResponse.access_token) {
                     setIsSignedIn(true);
                     
+                    // The gapi client needs the token to be set to make authorized calls
                     window.gapi.client.setToken(tokenResponse);
                     
+                    // Fetch user profile info
                     try {
                         const profileResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                             headers: { 'Authorization': `Bearer ${tokenResponse.access_token}` }
@@ -56,15 +64,9 @@ export const useGoogleAuth = () => {
                         if (profileResponse.ok) {
                             const profile = await profileResponse.json();
                             setUserProfile({ email: profile.email, name: profile.name, picture: profile.picture });
-                        } else {
-                             console.error("Error fetching user profile:", profileResponse.statusText);
-                             setIsSignedIn(false);
-                             setUserProfile(null);
                         }
                     } catch (error) {
                         console.error("Error fetching user profile:", error);
-                        setIsSignedIn(false);
-                        setUserProfile(null);
                     }
                 }
             },
@@ -78,19 +80,26 @@ export const useGoogleAuth = () => {
             return;
         }
 
-        if (initInProgress.current) return;
-        initInProgress.current = true;
+        const gapiScript = document.createElement('script');
+        gapiScript.src = 'https://apis.google.com/js/api.js';
+        gapiScript.async = true;
+        gapiScript.defer = true;
+        gapiScript.onload = () => window.gapi.load('client', initializeGapiClient);
+        document.body.appendChild(gapiScript);
 
-        const checkScripts = () => {
-            if (window.gapi && window.google) {
-                window.gapi.load('client', initializeGapiClient);
-                initializeTokenClient();
-            } else {
-                setTimeout(checkScripts, 100);
-            }
+        const gsiScript = document.createElement('script');
+        gsiScript.src = 'https://accounts.google.com/gsi/client';
+        gsiScript.async = true;
+        gsiScript.defer = true;
+        gsiScript.onload = initializeTokenClient;
+        document.body.appendChild(gsiScript);
+
+
+        return () => {
+            if (document.body.contains(gapiScript)) document.body.removeChild(gapiScript);
+            if (document.body.contains(gsiScript)) document.body.removeChild(gsiScript);
         };
-
-        checkScripts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initializeGapiClient, initializeTokenClient]);
 
     const signIn = () => {

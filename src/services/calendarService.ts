@@ -1,7 +1,7 @@
 import { Task } from '../types';
 
 export const createCalendarEvent = async (task: Task, gapi: any) => {
-    if (!gapi || !gapi.client.calendar) {
+    if (!gapi || !gapi.client || !gapi.client.calendar) {
         throw new Error('Google Calendar API client not available.');
     }
 
@@ -13,7 +13,7 @@ export const createCalendarEvent = async (task: Task, gapi: any) => {
     const startDate = new Date(endDate.getTime() - task.elapsedSeconds * 1000);
 
     const event = {
-        'summary': task.name,
+        'summary': `[taime] ${task.name}`,
         'description': task.description || 'Tracked with taime app.',
         'start': {
             'dateTime': startDate.toISOString(),

@@ -105,11 +105,12 @@ export const translations = {
     clearDataConfirm: 'Are you sure you want to delete all app data? This action cannot be undone.',
     dataClearedSuccess: 'All app data has been successfully cleared.',
     // Footer
-    footerCopyright: "This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.",
-    footerGithubLink: "See the project on GitHub",
-    footerDonationTitle: "Support taime ☕",
-    footerDonationText: "If taime is helping you tame your deadlines and boost your productivity, how about a 'coffee'? Your donation helps keep the servers running and the Gemini API working!",
-    footerDonationLink: "Click here to support!",
+    footerCopyright: "This project is licensed under the GNU General Public License v3.0.",
+    footerGithubLink: "View on GitHub",
+    footerSupportTitle: "Support taime ☕",
+    footerSupportText: "If this tool boosts your productivity, consider supporting its development.",
+    footerPrivacy: "Privacy Policy",
+    footerTerms: "Terms of Use",
   },
   'pt-BR': {
     appSlogan: 'Seu tempo, otimizado com inteligência.',
@@ -217,10 +218,11 @@ export const translations = {
     clearDataConfirm: 'Tem certeza que deseja apagar todos os dados do aplicativo? Esta ação não pode ser desfeita.',
     dataClearedSuccess: 'Todos os dados do aplicativo foram limpos com sucesso.',
      // Footer
-    footerCopyright: "Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 - veja o arquivo LICENSE para detalhes.",
-    footerGithubLink: "Veja o projeto no GitHub",
-    footerDonationTitle: "Apoie o taime ☕",
-    footerDonationText: "Se o taime está te ajudando a domar os prazos e turbinar sua produtividade, que tal um 'cafezinho'? Sua doação ajuda a manter os servidores no ar e a API do Gemini funcionando!",
-    footerDonationLink: "Clique aqui para apoiar!",
+    footerCopyright: "Este projeto está licenciado sob a Licença Pública Geral GNU v3.0.",
+    footerGithubLink: "Ver no GitHub",
+    footerSupportTitle: "Apoie o taime ☕",
+    footerSupportText: "Se esta ferramenta aumenta sua produtividade, considere apoiar o desenvolvimento.",
+    footerPrivacy: "Política de Privacidade",
+    footerTerms: "Termos de Uso",
   }
 };

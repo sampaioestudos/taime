@@ -29,6 +29,8 @@ const TaskInput: React.FC<TaskInputProps> = ({
     }
   };
 
+  const showDropdown = isSearching || (taskName.length > 2 && jiraIssues.length > 0 && !/^[A-Z][A-Z0-9]+-\d+:/.test(taskName));
+
   return (
     <div className="relative mb-6">
       <form onSubmit={handleSubmit} className="flex items-start gap-2">
@@ -38,12 +40,12 @@ const TaskInput: React.FC<TaskInputProps> = ({
             value={taskName}
             onChange={(e) => onTaskNameChange(e.target.value)}
             placeholder={t('jiraSearchPlaceholder')}
-            className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors"
+            className="w-full bg-gray-700/80 text-gray-200 border border-gray-600/80 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors"
             required
             autoComplete="off"
           />
-          {(isSearching || jiraIssues.length > 0) && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+          {showDropdown && (
+            <div className="absolute top-full left-0 right-0 mt-1 glassmorphism !bg-slate-900/95 z-10 max-h-60 overflow-y-auto animate-fade-in">
               {isSearching ? (
                 <div className="px-4 py-2 text-gray-400">{t('searchingIssues')}</div>
               ) : (
@@ -52,16 +54,16 @@ const TaskInput: React.FC<TaskInputProps> = ({
                     <li 
                       key={issue.key} 
                       onClick={() => onSelectIssue(issue)}
-                      className="px-4 py-2 hover:bg-cyan-700 cursor-pointer text-gray-200"
+                      className="px-4 py-2 hover:bg-cyan-600/50 cursor-pointer text-gray-200"
                     >
                       <span className="font-bold text-blue-400">{issue.key}</span>: {issue.summary}
                     </li>
                   ))}
+                   {jiraIssues.length === 0 && !isSearching && taskName.length > 2 && (
+                    <div className="px-4 py-2 text-gray-400">{t('noIssuesFound')}</div>
+                   )}
                 </ul>
               )}
-               {jiraIssues.length === 0 && !isSearching && (
-                 <div className="px-4 py-2 text-gray-400">{t('noIssuesFound')}</div>
-               )}
             </div>
           )}
         </div>
@@ -70,7 +72,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
           className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors flex items-center justify-center gap-2 shrink-0"
         >
           <PlusIcon className="h-5 w-5"/>
-          <span>{t('addTaskButton')}</span>
+          <span className="hidden sm:inline">{t('addTaskButton')}</span>
         </button>
       </form>
     </div>
