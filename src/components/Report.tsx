@@ -1,7 +1,6 @@
 
-
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { AnalysisResult } from '../types';
 import { formatTime } from '../utils/time';
 import { LightBulbIcon } from './icons';
@@ -55,25 +54,25 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     <div className="space-y-8 animate-fade-in">
       <div>
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
-        <div className="h-72 w-full bg-slate-900/70 rounded-lg p-2 sm:p-4">
+        <div className="h-80 w-full bg-slate-900/70 rounded-lg p-2 sm:p-4">
            <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
               <Pie
                 data={chartData}
                 cx="50%"
-                cy="50%"
+                cy="45%"
                 labelLine={false}
-                outerRadius={70}
+                outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {chartData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-slate-800 !border-slate-700 rounded-md" />
+              <Legend verticalAlign="bottom" align="center" />
             </PieChart>
           </ResponsiveContainer>
         </div>

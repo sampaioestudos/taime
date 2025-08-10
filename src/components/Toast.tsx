@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useCallback } from 'react';
 import { XIcon, LightBulbIcon, CheckCircleIcon, AlertTriangleIcon } from './icons';
 
@@ -18,12 +19,12 @@ interface ToastContextType {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> = ({ toast, onDismiss }) => {
-  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 text-white rounded-xl shadow-lg ring-1 ring-black/20 transition-all transform";
+  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 rounded-xl shadow-lg ring-1 ring-slate-700/80 transition-all transform backdrop-blur-sm";
   
   const typeClasses = {
-    info: 'bg-slate-800 text-slate-100',
-    success: 'bg-emerald-800 text-emerald-100',
-    error: 'bg-rose-800 text-rose-100',
+    info: 'bg-slate-800/95 text-slate-100',
+    success: 'bg-emerald-800/95 text-emerald-100',
+    error: 'bg-rose-800/95 text-rose-100',
   };
   
   const icons = {
