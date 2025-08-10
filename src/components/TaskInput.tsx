@@ -57,7 +57,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
 
   const showSearchResults = isJiraConfigured && (isJiraSearching || jiraIssues.length > 0);
   
-  const inputClasses = "bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
+  const inputClasses = "bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
 
   return (
     <div className="relative">
@@ -83,7 +83,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         
         <button
             type="submit"
-            className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors flex items-center justify-center sm:self-start gap-2"
+            className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors flex items-center justify-center sm:self-start gap-2"
         >
             <PlusIcon className="h-5 w-5"/>
             <span>{t('addTaskButton')}</span>

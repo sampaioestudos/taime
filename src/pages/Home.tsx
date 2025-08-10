@@ -314,7 +314,7 @@ const HomePage: React.FC = () => {
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -322,7 +322,7 @@ const HomePage: React.FC = () => {
             <LanguageSwitcher />
             <button
               onClick={handleResetDay}
-              className="px-4 py-2 text-sm font-semibold text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
             >
               {t('resetDay')}
             </button>
@@ -330,7 +330,7 @@ const HomePage: React.FC = () => {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-slate-900/70 p-6 rounded-xl shadow-lg ring-1 ring-slate-800">
+          <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
             <TaskInput
               taskName={taskName}
@@ -354,13 +354,13 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-8">
-            <div className="bg-slate-900/70 p-6 rounded-xl shadow-lg ring-1 ring-slate-800">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-semibold text-cyan-400">{t('productivityAnalysis')}</h2>
                 <button
                   onClick={handleAnalyze}
                   disabled={isAnalyzing || allTasksForTodayCount === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-lg hover:bg-cyan-500 disabled:bg-slate-700 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-all duration-200"
                 >
                   <BrainCircuitIcon className="h-5 w-5"/>
                   {isAnalyzing ? t('analyzingButton') : t('analyzeButton')}
@@ -370,7 +370,7 @@ const HomePage: React.FC = () => {
               <Report analysisResult={analysisResult} isLoading={isAnalyzing} totalTasksTodayCount={allTasksForTodayCount} />
             </div>
 
-            <div className="bg-slate-900/70 p-6 rounded-xl shadow-lg ring-1 ring-slate-800">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <WeeklyHistory
                 history={history}
                 goal={goal}
