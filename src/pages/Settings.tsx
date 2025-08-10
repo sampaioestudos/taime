@@ -26,7 +26,6 @@ const SettingsPage: React.FC = () => {
   const [jiraDomain, setJiraDomain] = useState('');
   const [jiraEmail, setJiraEmail] = useState('');
   const [jiraApiToken, setJiraApiToken] = useState('');
-  const [jiraProjectKey, setJiraProjectKey] = useState('');
   const [isTestingJira, setIsTestingJira] = useState(false);
   const [jiraTestStatus, setJiraTestStatus] = useState<'success' | 'error' | null>(null);
 
@@ -38,14 +37,13 @@ const SettingsPage: React.FC = () => {
           setJiraDomain(jiraConfig.domain);
           setJiraEmail(jiraConfig.email);
           setJiraApiToken(jiraConfig.apiToken);
-          setJiraProjectKey(jiraConfig.projectKey || '');
       }
   }, [jiraConfig]);
   
   // Reset test status if credentials change
   useEffect(() => {
       setJiraTestStatus(null);
-  }, [jiraDomain, jiraEmail, jiraApiToken, jiraProjectKey]);
+  }, [jiraDomain, jiraEmail, jiraApiToken]);
 
 
   const handleSaveGeneralSettings = (e: React.FormEvent) => {
@@ -57,11 +55,10 @@ const SettingsPage: React.FC = () => {
   const handleSaveJiraConfig = (e: React.FormEvent) => {
     e.preventDefault();
     if(jiraDomain.trim() && jiraEmail.trim() && jiraApiToken.trim()) {
-        const newConfig: JiraConfig = {
+        const newConfig = {
             domain: jiraDomain.trim(),
             email: jiraEmail.trim(),
             apiToken: jiraApiToken.trim(),
-            projectKey: jiraProjectKey.trim().toUpperCase() || undefined,
         };
         setJiraConfig(newConfig);
         addToast(t('jiraConfigSaved'), 'success');
@@ -71,7 +68,7 @@ const SettingsPage: React.FC = () => {
   }
 
   const handleTestJiraConnection = async () => {
-    const config: JiraConfig = {
+    const config = {
         domain: jiraDomain.trim(),
         email: jiraEmail.trim(),
         apiToken: jiraApiToken.trim(),
@@ -205,10 +202,10 @@ const SettingsPage: React.FC = () => {
                 <form onSubmit={handleSaveJiraConfig} className="space-y-4">
                     <input type="text" value={jiraDomain} onChange={e => setJiraDomain(e.target.value)} placeholder={t('jiraDomain')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
                     <input type="email" value={jiraEmail} onChange={e => setJiraEmail(e.target.value)} placeholder={t('jiraEmail')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
-                    <input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
-                    <p className="text-xs text-gray-500 -mt-2">{t('jiraApiTokenHelp')}</p>
-                    <input type="text" value={jiraProjectKey} onChange={e => setJiraProjectKey(e.target.value)} placeholder={t('jiraProjectKeyPlaceholder')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-                    
+                    <div>
+                        <input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
+                        <p className="text-xs text-gray-500 mt-1">{t('jiraApiTokenHelp')}</p>
+                    </div>
                     <div className="flex items-center gap-4 pt-2">
                          <button
                             type="submit"
