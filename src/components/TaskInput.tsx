@@ -5,9 +5,7 @@ import { JiraIssue } from '../types';
 
 interface TaskInputProps {
   taskName: string;
-  jiraIssueKey: string;
   onTaskNameChange: (value: string) => void;
-  onJiraIssueKeyChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   jiraIssues: JiraIssue[];
   isJiraSearching: boolean;
@@ -50,48 +48,40 @@ const JiraSearchResults: React.FC<{
 };
 
 const TaskInput: React.FC<TaskInputProps> = ({ 
-    taskName, jiraIssueKey, onTaskNameChange, onJiraIssueKeyChange, 
-    onSubmit, jiraIssues, isJiraSearching, onJiraIssueSelect, isJiraConfigured
+    taskName, onTaskNameChange, onSubmit, 
+    jiraIssues, isJiraSearching, onJiraIssueSelect, isJiraConfigured
 }) => {
   const { t } = useTranslation();
 
   const showSearchResults = isJiraConfigured && (isJiraSearching || jiraIssues.length > 0);
-  
-  const inputClasses = "bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
+  const inputClasses = "bg-slate-700 text-slate-100 border border-slate-600 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
 
   return (
     <div className="relative">
-        <form onSubmit={onSubmit} className="flex flex-col gap-2 mb-6">
-        <div className="flex flex-col sm:flex-row gap-2">
-            <input
-            type="text"
-            value={taskName}
-            onChange={(e) => onTaskNameChange(e.target.value)}
-            placeholder={t('addTaskPlaceholder')}
-            className={`flex-grow ${inputClasses}`}
-            required
-            autoComplete="off"
-            />
-            <input
-            type="text"
-            value={jiraIssueKey}
-            onChange={(e) => onJiraIssueKeyChange(e.target.value.toUpperCase())}
-            placeholder={t('jiraIssueKeyPlaceholder')}
-            className={`sm:w-40 ${inputClasses}`}
-            />
-        </div>
-        
-        <button
-            type="submit"
-            className="bg-cyan-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors flex items-center justify-center sm:self-start gap-2"
-        >
-            <PlusIcon className="h-5 w-5"/>
-            <span>{t('addTaskButton')}</span>
-        </button>
+        <form onSubmit={onSubmit} className="flex items-start gap-2 mb-4">
+            <div className="relative flex-grow">
+                 <input
+                    type="text"
+                    value={taskName}
+                    onChange={(e) => onTaskNameChange(e.target.value)}
+                    placeholder={t('addTaskPlaceholder')}
+                    className={`w-full ${inputClasses}`}
+                    required
+                    autoComplete="off"
+                 />
+                 {showSearchResults && (
+                     <JiraSearchResults issues={jiraIssues} isLoading={isJiraSearching} onSelect={onJiraIssueSelect} t={t} />
+                 )}
+            </div>
+            
+            <button
+                type="submit"
+                className="bg-cyan-600 text-white font-semibold px-4 py-2.5 rounded-lg hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors flex items-center justify-center gap-2"
+            >
+                <PlusIcon className="h-5 w-5"/>
+                <span className="hidden sm:inline">{t('addTaskButton')}</span>
+            </button>
         </form>
-        {showSearchResults && (
-             <JiraSearchResults issues={jiraIssues} isLoading={isJiraSearching} onSelect={onJiraIssueSelect} t={t} />
-        )}
     </div>
   );
 };
