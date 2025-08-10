@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig } from '../types';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
 import TaskInput from '../components/TaskInput';
 import TaskList from '../components/TaskList';
 import Report from '../components/Report';
@@ -16,7 +16,7 @@ import { useRealtimeInsights } from '../hooks/useRealtimeInsights';
 import ExportImportModal from '../components/ExportImportModal';
 import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/exportImportService';
 import { useToast } from '../components/Toast';
-import { logWorkToJira } from '../services/jiraService';
+import { logWorkToJira, searchJiraIssues } from '../services/jiraService';
 
 
 const HomePage: React.FC = () => {
@@ -25,7 +25,6 @@ const HomePage: React.FC = () => {
   const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
   const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
-
 
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -40,8 +39,42 @@ const HomePage: React.FC = () => {
   const [isAnalyzingHistory, setIsAnalyzingHistory] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   
+  // State for Jira Search
+  const [taskName, setTaskName] = useState('');
+  const [jiraIssueKey, setJiraIssueKey] = useState('');
+  const [jiraIssues, setJiraIssues] = useState<JiraIssue[]>([]);
+  const [isSearchingJira, setIsSearchingJira] = useState(false);
+  const searchTimeoutRef = useRef<number | null>(null);
+
+
   const activeTask = tasks.find(t => t.id === activeTaskId) || null;
   useRealtimeInsights({ activeTask, isEnabled: goal?.realtimeInsightsEnabled ?? false });
+
+  // Debounced Jira Search Effect
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (taskName.length > 1 && jiraConfig) {
+        setIsSearchingJira(true);
+        searchTimeoutRef.current = window.setTimeout(async () => {
+            const results = await searchJiraIssues(jiraConfig, taskName, jiraConfig.projectKey);
+            setJiraIssues(results);
+            setIsSearchingJira(false);
+        }, 500); // 500ms debounce
+    } else {
+        setJiraIssues([]);
+        setIsSearchingJira(false);
+    }
+    
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [taskName, jiraConfig]);
+
   
   useEffect(() => {
     let interval: number | null = null;
@@ -63,18 +96,21 @@ const HomePage: React.FC = () => {
     };
   }, [activeTaskId, setTasks]);
 
-  const handleAddTask = (taskName: string, jiraIssueKey?: string) => {
+  const handleAddTask = () => {
     if (taskName.trim() === '') return;
     const newTask: Task = {
       id: crypto.randomUUID(),
-      name: taskName,
+      name: taskName.trim(),
       description: '',
       elapsedSeconds: 0,
       syncedToCalendar: false,
-      jiraIssueKey: jiraIssueKey || undefined,
+      jiraIssueKey: jiraIssueKey.trim() || undefined,
       timeLoggedToJiraSeconds: 0,
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
+    setTaskName('');
+    setJiraIssueKey('');
+    setJiraIssues([]);
   };
 
   const handleTaskClick = (taskId: string) => {
@@ -252,6 +288,20 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleTaskNameChange = (name: string) => {
+      setTaskName(name);
+      // If user types something different from selected issue summary, clear the key
+      if (jiraIssueKey) {
+          setJiraIssueKey('');
+      }
+  };
+
+  const handleSelectIssue = (issue: JiraIssue) => {
+      setTaskName(issue.summary);
+      setJiraIssueKey(issue.key);
+      setJiraIssues([]);
+  };
+
   const todayISO = getTodayISOString();
   const historicalTasksToday = history[todayISO]?.tasks || [];
   const allTasksForTodayCount = historicalTasksToday.length + tasks.filter(t => t.elapsedSeconds > 0).length;
@@ -283,7 +333,14 @@ const HomePage: React.FC = () => {
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
-            <TaskInput onAddTask={handleAddTask} />
+            <TaskInput 
+              taskName={taskName}
+              onTaskNameChange={handleTaskNameChange}
+              onAddTask={handleAddTask}
+              isSearching={isSearchingJira}
+              jiraIssues={jiraIssues}
+              onSelectIssue={handleSelectIssue}
+            />
             <TaskList
               tasks={tasks}
               onTaskClick={handleTaskClick}

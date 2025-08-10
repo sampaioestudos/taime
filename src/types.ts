@@ -9,6 +9,11 @@ export interface Task {
   timeLoggedToJiraSeconds?: number;
 }
 
+export interface JiraIssue {
+  key: string;
+  summary: string;
+}
+
 export interface Category {
   categoryName: string;
   tasks: string[];
@@ -42,6 +47,7 @@ export interface JiraConfig {
     domain: string;
     email: string;
     apiToken: string;
+    projectKey?: string;
 }
 
 declare global {
