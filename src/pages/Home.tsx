@@ -6,7 +6,7 @@ import Report from '../components/Report';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import WeeklyHistory from '../components/WeeklyHistory';
 import Modal from '../components/Modal';
-import { getTaskAnalysis, getRealtimeInsight } from '../services/geminiService';
+import { getTaskAnalysis } from '../services/geminiService';
 import { getTodayISOString } from '../utils/date';
 import { BrainCircuitIcon, ExportIcon } from '../components/icons';
 import { useTranslation } from '../i18n';
