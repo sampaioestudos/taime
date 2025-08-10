@@ -7,7 +7,6 @@ import { CalendarIcon, JiraIcon, CheckCircleIcon, XIcon } from '../components/ic
 import { useToast } from '../components/Toast';
 import { testJiraConnection } from '../services/jiraService';
 
-// Standardized Components & Classes
 const Card: React.FC<{children: React.ReactNode}> = ({ children }) => (
     <div className="bg-slate-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
         {children}
@@ -30,7 +29,7 @@ const SettingsPage: React.FC = () => {
 
   // Goal Settings
   const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', { weeklyHours: 0, realtimeInsightsEnabled: false });
-  const [hours, setHours] = useState(goal?.weeklyHours || 0);
+  const [hours, setHours] = useState(goal?.weeklyHours ?? 0);
   const [insightsEnabled, setInsightsEnabled] = useState(goal?.realtimeInsightsEnabled || false);
 
   // Data Management state
