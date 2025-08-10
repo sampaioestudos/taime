@@ -22,8 +22,8 @@ const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> 
   
   const typeClasses = {
     info: 'bg-slate-800 text-slate-100',
-    success: 'bg-emerald-800/90 text-emerald-100',
-    error: 'bg-rose-800/90 text-rose-100',
+    success: 'bg-emerald-800 text-emerald-100',
+    error: 'bg-rose-800 text-rose-100',
   };
   
   const icons = {
@@ -36,7 +36,7 @@ const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> 
     <div className={`${baseClasses} ${typeClasses[toast.type]} animate-fade-in-right`}>
       <div className="shrink-0">{icons[toast.type]}</div>
       <div className="flex-1 text-sm font-medium">{toast.message}</div>
-      <button onClick={() => onDismiss(toast.id)} className="p-1 text-slate-400 hover:text-white rounded-full">
+      <button onClick={() => onDismiss(toast.id)} className="p-1 text-gray-400 hover:text-white rounded-full">
         <XIcon className="h-4 w-4" />
       </button>
     </div>
