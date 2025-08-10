@@ -3,27 +3,42 @@ import { useTranslation } from '../i18n';
 
 const Footer: React.FC = () => {
     const { t } = useTranslation();
-    const pixKey = "a38267e7-38e5-474c-813c-0e713511746d"; // Example PIX key
 
     return (
-        <footer className="w-full mt-12 pt-8 border-t border-slate-800 text-slate-500 text-xs">
-            <div className="max-w-4xl mx-auto space-y-4">
-                <div className="bg-slate-900/50 p-4 rounded-lg">
-                    <h4 className="font-bold text-sm text-slate-300 mb-1">{t('footerSupportTitle')}</h4>
-                    <p>
-                        {t('footerSupportText_part1')}
-                        <b className="text-slate-400">{t('footerSupportText_bold')}</b>
-                        {t('footerSupportText_part2')}
-                        <a href="https://www.buymeacoffee.com/edwardborges" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">{t('footerSupportLinkText')}</a>
-                        {t('footerSupportText_part3')}
+        <footer className="w-full mt-12 pt-8 border-t border-slate-800 text-slate-500 text-sm">
+            <div className="max-w-4xl mx-auto space-y-6 text-center">
+                
+                {/* Donation Section */}
+                <div className="bg-slate-900/50 p-6 rounded-lg">
+                    <h4 className="font-bold text-lg text-cyan-400 mb-2">{t('footerDonationTitle')}</h4>
+                    <p className="text-slate-400">
+                        {t('footerDonationText')}
+                        {' '}
+                        <a 
+                            href="https://link.mercadopago.com.br/taimeonline"
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="font-semibold text-cyan-400 hover:underline"
+                        >
+                            {t('footerDonationLink')}
+                        </a>
                     </p>
                 </div>
-                 <div className="text-center">
+
+                {/* Copyright and Links Section */}
+                <div className="space-y-2 text-xs px-4">
                     <p>
-                        {t('footerCreditsText_part1')}
-                        <b className="text-slate-400">{t('footerCreditsText_bold')}</b>
-                        {t('footerCreditsText_part2')}
-                        <span className="font-mono bg-slate-800 text-slate-400 px-1.5 py-1 rounded-md">{pixKey}</span>
+                        <a 
+                            href="https://github.com/sampaioestudos/taime" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="hover:text-cyan-400 hover:underline"
+                        >
+                           {t('footerGithubLink')}
+                        </a>
+                    </p>
+                    <p>
+                        {t('footerCopyright')}
                     </p>
                 </div>
             </div>
