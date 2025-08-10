@@ -20,7 +20,7 @@ const JiraSearchResults: React.FC<{
     t: (key: any) => string
 }> = ({ issues, isLoading, onSelect, t }) => {
     if (isLoading) {
-        return <div className="absolute top-full mt-2 w-full bg-slate-800 rounded-lg p-3 text-slate-400 text-sm shadow-lg z-10">{t('jiraSearching')}</div>;
+        return <div className="absolute top-full mt-2 w-full bg-gray-800 rounded-lg p-3 text-gray-400 text-sm shadow-lg z-10">{t('jiraSearching')}</div>;
     }
 
     if (issues.length === 0) {
@@ -28,18 +28,18 @@ const JiraSearchResults: React.FC<{
     }
 
     return (
-        <ul className="absolute top-full mt-2 w-full bg-slate-800 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto ring-1 ring-slate-700">
+        <ul className="absolute top-full mt-2 w-full bg-gray-800 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto ring-1 ring-gray-700">
             {issues.map(issue => (
                 <li key={issue.key}>
                     <button
                         type="button"
                         onClick={() => onSelect(issue)}
-                        className="w-full text-left flex items-center gap-3 p-3 hover:bg-slate-700 transition-colors"
+                        className="w-full text-left flex items-center gap-3 p-3 hover:bg-gray-700 transition-colors"
                     >
                         <img src={issue.issuetype.iconUrl} alt={issue.issuetype.name} className="h-4 w-4" />
-                        <span className="font-mono text-xs text-slate-400">{issue.key}</span>
-                        <span className="flex-1 truncate text-sm text-slate-200">{issue.summary}</span>
-                         <span className="text-xs text-slate-500 shrink-0">{issue.status.name}</span>
+                        <span className="font-mono text-xs text-gray-400">{issue.key}</span>
+                        <span className="flex-1 truncate text-sm text-gray-200">{issue.summary}</span>
+                         <span className="text-xs text-gray-500 shrink-0">{issue.status.name}</span>
                     </button>
                 </li>
             ))}
@@ -54,7 +54,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
   const { t } = useTranslation();
 
   const showSearchResults = isJiraConfigured && (isJiraSearching || jiraIssues.length > 0);
-  const inputClasses = "bg-slate-700 text-slate-100 border border-slate-600 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
+  const inputClasses = "flex-grow bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors";
 
   return (
     <div className="relative">
@@ -76,7 +76,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
             
             <button
                 type="submit"
-                className="bg-cyan-600 text-white font-semibold px-4 py-2.5 rounded-lg hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors flex items-center justify-center gap-2"
+                className="bg-cyan-600 text-white font-semibold px-4 py-2.5 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors flex items-center justify-center gap-2"
             >
                 <PlusIcon className="h-5 w-5"/>
                 <span className="hidden sm:inline">{t('addTaskButton')}</span>

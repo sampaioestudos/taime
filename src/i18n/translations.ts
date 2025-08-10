@@ -98,16 +98,6 @@ export const translations = {
     clearDataDescription: 'Permanently delete all tracked tasks, history, and progress. This action is irreversible.',
     clearDataConfirm: 'Are you sure you want to delete all app data? This action cannot be undone.',
     dataClearedSuccess: 'All app data has been successfully cleared.',
-    // Footer
-    footerSupportTitle: "Enjoying taime?",
-    footerSupportText_part1: "If this app helps you stay organized, consider ",
-    footerSupportText_bold: "supporting its development",
-    footerSupportText_part2: " with a donation. Every little bit helps keep the project alive and ad-free. You can ",
-    footerSupportLinkText: "buy me a coffee",
-    footerSupportText_part3: " or send a PIX donation.",
-    footerCreditsText_part1: "Made with ❤️ by ",
-    footerCreditsText_bold: "Edward Borges.",
-    footerCreditsText_part2: " PIX Key (CNPJ): ",
   },
   'pt-BR': {
     appSlogan: 'Seu tempo, otimizado com inteligência.',
@@ -208,15 +198,5 @@ export const translations = {
     clearDataDescription: 'Exclua permanentemente todas as tarefas, histórico e progresso. Esta ação é irreversível.',
     clearDataConfirm: 'Tem certeza que deseja apagar todos os dados do aplicativo? Esta ação não pode ser desfeita.',
     dataClearedSuccess: 'Todos os dados do aplicativo foram limpos com sucesso.',
-    // Footer
-    footerSupportTitle: "Gostando do taime?",
-    footerSupportText_part1: "Se este aplicativo te ajuda a se manter organizado, considere ",
-    footerSupportText_bold: "apoiar seu desenvolvimento",
-    footerSupportText_part2: " com uma doação. Cada contribuição ajuda a manter o projeto vivo e sem anúncios. Você pode ",
-    footerSupportLinkText: "me pagar um café",
-    footerSupportText_part3: " ou enviar uma doação via PIX.",
-    footerCreditsText_part1: "Feito com ❤️ por ",
-    footerCreditsText_bold: "Edward Borges.",
-    footerCreditsText_part2: " Chave PIX (CNPJ): ",
   }
 };
