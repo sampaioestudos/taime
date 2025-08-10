@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { AnalysisResult } from '../types';
@@ -42,7 +41,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     return <LoadingSpinner />;
   }
 
-  if (!analysisResult) {
+  if (!analysisResult || analysisResult.categories.length === 0) {
     return <EmptyState totalTasksTodayCount={totalTasksTodayCount} />;
   }
   
@@ -50,24 +49,26 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     name: cat.categoryName,
     value: cat.totalTime,
   }));
+
+  const totalTime = chartData.reduce((sum, entry) => sum + entry.value, 0);
   
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
-        <div className="h-72 w-full bg-gray-800 rounded-lg p-2 sm:p-4">
-           <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <h3 className="text-lg font-semibold text-white mb-2">{t('reportChartTitle')}</h3>
+        <div className="h-96 w-full bg-gray-800 rounded-lg p-2 sm:p-4 flex flex-col">
+           <ResponsiveContainer width="100%" height="70%">
+            <PieChart>
               <Pie
                 data={chartData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={80}
+                outerRadius={75}
+                innerRadius={40}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -76,6 +77,14 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
               <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700 !border-gray-600 rounded-md" />
             </PieChart>
           </ResponsiveContainer>
+          <div className="flex-grow flex flex-wrap justify-center items-center content-center gap-x-4 gap-y-2 mt-2">
+            {chartData.map((entry, index) => (
+              <div key={`legend-${index}`} className="flex items-center text-xs text-gray-300">
+                <span className="w-3 h-3 rounded-sm mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
+                {entry.name} ({totalTime > 0 ? ((entry.value / totalTime) * 100).toFixed(0) : 0}%)
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       

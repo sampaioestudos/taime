@@ -213,17 +213,19 @@ const SettingsPage: React.FC = () => {
                         >
                             {t('saveJiraConfig')}
                         </button>
-                         <button
-                            type="button"
-                            onClick={handleTestJiraConnection}
-                            disabled={isTestingJira}
-                            className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-wait"
-                        >
-                            {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
-                        </button>
-                        <div className="h-6 w-6">
-                            {jiraTestStatus === 'success' && <CheckCircleIcon className="h-full w-full text-green-500 animate-fade-in" aria-label={t('jiraTestSuccess')}/>}
-                            {jiraTestStatus === 'error' && <XIcon className="h-full w-full text-red-500 animate-fade-in" aria-label={t('jiraTestError')}/>}
+                        <div className="flex items-center gap-2">
+                             <button
+                                type="button"
+                                onClick={handleTestJiraConnection}
+                                disabled={isTestingJira}
+                                className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-wait"
+                            >
+                                {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
+                            </button>
+                            <div className="h-6 w-6">
+                                {jiraTestStatus === 'success' && <CheckCircleIcon className="h-full w-full text-green-500 animate-fade-in" aria-label={t('jiraTestSuccess')}/>}
+                                {jiraTestStatus === 'error' && <XIcon className="h-full w-full text-red-500 animate-fade-in" aria-label={t('jiraTestError')}/>}
+                            </div>
                         </div>
                     </div>
                 </form>
