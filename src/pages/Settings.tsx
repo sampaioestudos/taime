@@ -20,7 +20,7 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
 
 const baseButtonClasses = "px-5 py-2 text-sm font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors";
 const primaryButtonClasses = `${baseButtonClasses} bg-cyan-600 text-white hover:bg-cyan-500 focus:ring-cyan-500`;
-const secondaryButtonClasses = `${baseButtonClasses} bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500`;
+const secondaryButtonClasses = `${baseButtonClasses} bg-slate-700 text-slate-200 hover:bg-slate-600 focus:ring-slate-500 disabled:opacity-60 disabled:cursor-not-allowed`;
 const destructiveButtonClasses = `${baseButtonClasses} bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-500`;
 
 
@@ -47,7 +47,7 @@ const SettingsPage: React.FC = () => {
   const [jiraTestStatus, setJiraTestStatus] = useState<'success' | 'error' | null>(null);
 
   // Google Auth
-  const { isSignedIn, user, signIn, signOut } = useGoogleAuth();
+  const { isAuthReady, isSignedIn, user, signIn, signOut } = useGoogleAuth();
   
   useEffect(() => {
       if (jiraConfig) {
@@ -203,10 +203,11 @@ const SettingsPage: React.FC = () => {
                 ) : (
                     <button 
                         onClick={signIn}
+                        disabled={!isAuthReady}
                         className={`${secondaryButtonClasses} flex items-center gap-2`}
                     >
                         <CalendarIcon className="w-5 h-5"/>
-                        {t('connectGoogle')}
+                        {isAuthReady ? t('connectGoogle') : t('jiraTesting')}
                     </button>
                 )}
             </Card>

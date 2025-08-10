@@ -8,6 +8,7 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.goog
 export const useGoogleAuth = () => {
     const [tokenClient, setTokenClient] = useState<any>(null);
     const [gapiReady, setGapiReady] = useState(false);
+    const [isAuthReady, setIsAuthReady] = useState(false);
 
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [user, setUser] = useLocalStorage<any>('taime-gauth-user', null);
@@ -57,13 +58,21 @@ export const useGoogleAuth = () => {
 
     // Step 3: Load GIS script and initialize token client
     useEffect(() => {
-        if (gisLoaded.current || !GOOGLE_CLIENT_ID) return;
+        if (gisLoaded.current || !GOOGLE_CLIENT_ID) {
+            if (!GOOGLE_CLIENT_ID) {
+                // If no client ID is present, we can consider auth 'ready' but it will fail on click.
+                // This prevents the button from being permanently disabled.
+                setIsAuthReady(true);
+            }
+            return;
+        }
 
         const script = document.createElement('script');
         script.src = 'https://accounts.google.com/gsi/client';
         script.async = true;
         script.defer = true;
         script.onload = () => {
+            gisLoaded.current = true;
             try {
                 const client = window.google.accounts.oauth2.initTokenClient({
                     client_id: GOOGLE_CLIENT_ID,
@@ -84,10 +93,16 @@ export const useGoogleAuth = () => {
                 setTokenClient(client);
             } catch (error) {
                 console.error("Error initializing GIS client", error);
+            } finally {
+                setIsAuthReady(true);
             }
         };
+        script.onerror = () => {
+            gisLoaded.current = true;
+            setIsAuthReady(true); // Unblock UI even if script fails to load
+            console.error("Failed to load Google Identity Services script.");
+        };
         document.body.appendChild(script);
-        gisLoaded.current = true;
 
     }, [setAccessToken, setIsSignedIn, signOut]);
 
@@ -118,12 +133,13 @@ export const useGoogleAuth = () => {
         if (tokenClient) {
             tokenClient.requestAccessToken({ prompt: '' });
         } else {
-            console.error("Google Identity Services not initialized yet. Please wait.");
+            console.error("Google Identity Services not initialized yet. Please wait or check configuration.");
         }
     };
 
     return {
         gapi: gapiReady ? window.gapi : null,
+        isAuthReady,
         isSignedIn,
         user,
         signIn,
