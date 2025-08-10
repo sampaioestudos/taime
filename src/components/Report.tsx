@@ -70,7 +70,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                 dataKey="value"
                 nameKey="name"
               >
-                {chartData.map((entry, index) => (
+                {chartData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

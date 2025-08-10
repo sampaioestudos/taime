@@ -99,8 +99,11 @@ export const getTaskAnalysis = async (tasks: Task[], language: string): Promise<
       },
     });
 
-    const jsonText = response.text.trim();
-    const result = JSON.parse(jsonText);
+    const jsonText = response.text;
+    if (!jsonText) {
+        throw new Error("Empty JSON response from API.");
+    }
+    const result = JSON.parse(jsonText.trim());
     
     if (!result.categories || !result.insights) {
         throw new Error("Invalid JSON structure received from API.");
@@ -130,7 +133,7 @@ export const getRealtimeInsight = async (taskName: string, elapsedSeconds: numbe
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text.trim();
+        return response.text?.trim() || "";
     } catch (error) {
         console.error("Error getting real-time insight:", error);
         return ""; // Return empty string on failure

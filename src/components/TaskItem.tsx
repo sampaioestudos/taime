@@ -109,7 +109,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
   return (
     <div
       onClick={() => onTaskClick(task.id)}
-      className={`${baseClasses} group cursor-pointer`}
+      className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses} group cursor-pointer`}
       role="button"
       tabIndex={0}
       aria-label={`Task: ${task.name}. Time: ${formatTime(task.elapsedSeconds)}. Status: ${isActive ? 'Active' : 'Paused'}`}
