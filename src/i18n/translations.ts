@@ -98,6 +98,16 @@ export const translations = {
     clearDataDescription: 'Permanently delete all tracked tasks, history, and progress. This action is irreversible.',
     clearDataConfirm: 'Are you sure you want to delete all app data? This action cannot be undone.',
     dataClearedSuccess: 'All app data has been successfully cleared.',
+    // Footer
+    footerSupportTitle: 'Enjoying taime?',
+    footerSupportText_part1: 'This app is a personal project, maintained and improved in my spare time. If you find it useful, consider ',
+    footerSupportText_bold: 'supporting its development',
+    footerSupportText_part2: ' by ',
+    footerSupportText_part3: ' or via PIX.',
+    footerSupportLinkText: 'buying me a coffee',
+    footerCreditsText_part1: 'Made with ❤️ by ',
+    footerCreditsText_bold: 'Edward Borges',
+    footerCreditsText_part2: '. PIX Key: ',
   },
   'pt-BR': {
     appSlogan: 'Seu tempo, otimizado com inteligência.',
@@ -173,13 +183,13 @@ export const translations = {
     synced: 'Sincronizado',
     // Jira
     jiraIntegrationTitle: 'Integração com Jira',
-    jiraIntegrationDescription: 'Conecte sua conta Jira para registrar tempo e buscar issues diretamente.',
+    jiraIntegrationDescription: 'Conecte sua conta Jira para registrar o tempo e buscar issues diretamente.',
     jiraDomain: 'Domínio do Jira (ex: sua-empresa.atlassian.net)',
     jiraEmail: 'Seu e-mail do Jira',
     jiraApiToken: 'Token de API do Jira',
     jiraApiTokenHelp: 'Crie um token de API nas configurações de segurança da sua conta Atlassian.',
     jiraProjectKey: 'Chave do Projeto Jira (Opcional)',
-    jiraProjectKeyHelp: 'Insira uma chave de projeto (ex: PROJ) para limitar a busca de issues àquele projeto.',
+    jiraProjectKeyHelp: 'Informe uma chave de projeto (ex: PROJ) para limitar a busca de issues àquele projeto.',
     saveJiraConfig: 'Salvar Config. Jira',
     jiraConfigSaved: 'Configuração do Jira salva!',
     jiraConfigError: 'Falha ao salvar. Verifique todos os campos.',
@@ -198,5 +208,15 @@ export const translations = {
     clearDataDescription: 'Exclua permanentemente todas as tarefas, histórico e progresso. Esta ação é irreversível.',
     clearDataConfirm: 'Tem certeza que deseja apagar todos os dados do aplicativo? Esta ação não pode ser desfeita.',
     dataClearedSuccess: 'Todos os dados do aplicativo foram limpos com sucesso.',
+    // Footer
+    footerSupportTitle: 'Gostando do taime?',
+    footerSupportText_part1: 'Este aplicativo é um projeto pessoal, mantido e melhorado no meu tempo livre. Se você o considera útil, considere ',
+    footerSupportText_bold: 'apoiar seu desenvolvimento',
+    footerSupportText_part2: ' ',
+    footerSupportText_part3: ' ou via PIX.',
+    footerSupportLinkText: 'me pagando um café',
+    footerCreditsText_part1: 'Feito com ❤️ por ',
+    footerCreditsText_bold: 'Edward Borges',
+    footerCreditsText_part2: '. Chave PIX: ',
   }
 };

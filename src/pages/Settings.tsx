@@ -31,7 +31,7 @@ const SettingsPage: React.FC = () => {
   const [jiraTestStatus, setJiraTestStatus] = useState<'success' | 'error' | null>(null);
 
   // Google Auth
-  const { isSignedIn, user, signIn, signOut } = useGoogleAuth();
+  const { isAuthReady, isSignedIn, user, signIn, signOut } = useGoogleAuth();
   
   useEffect(() => {
       if (jiraConfig) {
@@ -100,8 +100,8 @@ const SettingsPage: React.FC = () => {
     if (isNaN(value) || value < 0) {
         value = 0;
     }
-    if (value > 60) {
-        value = 60;
+    if (value > 100) {
+        value = 100;
     }
     setHours(value);
   }
@@ -115,6 +115,10 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  const cardClasses = "bg-slate-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10";
+  const inputClasses = "w-full bg-slate-700 text-slate-200 border border-slate-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500";
+  const helpTextClasses = "text-xs text-slate-500 mt-1";
+  
   return (
     <div>
       <header className="mb-8">
@@ -126,9 +130,9 @@ const SettingsPage: React.FC = () => {
       <main className="max-w-2xl space-y-12">
         {/* General Settings */}
         <form onSubmit={handleSaveGeneralSettings} className="space-y-8">
-            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+            <div className={cardClasses}>
               <h2 className="text-xl font-semibold text-cyan-400">{t('weeklyGoalTitle')}</h2>
-              <p className="text-gray-400 mt-1 mb-4">{t('weeklyGoalDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4">{t('weeklyGoalDescription')}</p>
               
               <div className="flex items-center gap-4">
                 <input
@@ -136,17 +140,17 @@ const SettingsPage: React.FC = () => {
                   value={hours}
                   onChange={handleHoursChange}
                   min="0"
-                  max="60"
-                  className="w-24 bg-gray-700 text-gray-200 text-center border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  max="100"
+                  className="w-24 bg-slate-700 text-slate-200 text-center border border-slate-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   aria-label={t('hoursPerWeek')}
                 />
-                <span className="text-gray-300">{t('hoursPerWeek')}</span>
+                <span className="text-slate-300">{t('hoursPerWeek')}</span>
               </div>
             </div>
           
-            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+            <div className={cardClasses}>
               <h2 className="text-xl font-semibold text-cyan-400">{t('realtimeInsightsTitle')}</h2>
-              <p className="text-gray-400 mt-1 mb-4 max-w-md">{t('realtimeInsightsDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4 max-w-md">{t('realtimeInsightsDescription')}</p>
               
               <label htmlFor="insights-toggle" className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -157,39 +161,40 @@ const SettingsPage: React.FC = () => {
                         checked={insightsEnabled}
                         onChange={() => setInsightsEnabled(!insightsEnabled)}
                     />
-                    <div className={`block w-14 h-8 rounded-full transition-colors ${insightsEnabled ? 'bg-cyan-600' : 'bg-gray-600'}`}></div>
+                    <div className={`block w-14 h-8 rounded-full transition-colors ${insightsEnabled ? 'bg-cyan-600' : 'bg-slate-600'}`}></div>
                     <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${insightsEnabled ? 'translate-x-6' : ''}`}></div>
                 </div>
             </label>
             </div>
              <button
                 type="submit"
-                className="px-5 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
+                className="px-5 py-2 text-sm font-semibold text-white bg-cyan-600 rounded-md hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors"
               >
                 {t('saveSettings')}
               </button>
         </form>
 
-        <hr className="border-gray-700"/>
+        <hr className="border-slate-700"/>
         
         {/* Integrations */}
         <div className="space-y-8">
-             <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+             <div className={cardClasses}>
               <h2 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
                   <CalendarIcon className="w-6 h-6"/> {t('googleCalendarTitle')}
               </h2>
-              <p className="text-gray-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
+              <p className="text-slate-400 mt-1 mb-4">{t('googleCalendarDescription')}</p>
                 {isSignedIn ? (
                     <div className="flex items-center justify-between">
-                         <p className="text-sm text-gray-300">{t('connectedAs', {email: user?.profileObj?.email || ''})}</p>
-                         <button onClick={signOut} className="text-sm font-semibold text-red-400 hover:text-red-300">
+                         <p className="text-sm text-slate-300">{t('connectedAs', {email: user?.email || ''})}</p>
+                         <button onClick={signOut} className="text-sm font-semibold text-rose-400 hover:text-rose-300">
                              {t('disconnectGoogle')}
                          </button>
                     </div>
                 ) : (
                     <button 
                         onClick={signIn}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
+                        disabled={!isAuthReady}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-slate-700 rounded-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <CalendarIcon className="w-5 h-5"/>
                         {t('connectGoogle')}
@@ -197,26 +202,26 @@ const SettingsPage: React.FC = () => {
                 )}
             </div>
 
-            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
+            <div className={cardClasses}>
                 <h2 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
                     <JiraIcon className="w-5 h-5"/>{t('jiraIntegrationTitle')}
                 </h2>
-                <p className="text-gray-400 mt-1 mb-4">{t('jiraIntegrationDescription')}</p>
+                <p className="text-slate-400 mt-1 mb-4">{t('jiraIntegrationDescription')}</p>
                 <form onSubmit={handleSaveJiraConfig} className="space-y-4">
-                    <input type="text" value={jiraDomain} onChange={e => setJiraDomain(e.target.value)} placeholder={t('jiraDomain')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
-                    <input type="email" value={jiraEmail} onChange={e => setJiraEmail(e.target.value)} placeholder={t('jiraEmail')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
+                    <input type="text" value={jiraDomain} onChange={e => setJiraDomain(e.target.value)} placeholder={t('jiraDomain')} className={inputClasses} required />
+                    <input type="email" value={jiraEmail} onChange={e => setJiraEmail(e.target.value)} placeholder={t('jiraEmail')} className={inputClasses} required />
                     <div>
-                        <input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required />
-                        <p className="text-xs text-gray-500 mt-1">{t('jiraApiTokenHelp')}</p>
+                        <input type="password" value={jiraApiToken} onChange={e => setJiraApiToken(e.target.value)} placeholder={t('jiraApiToken')} className={inputClasses} required />
+                        <p className={helpTextClasses}>{t('jiraApiTokenHelp')}</p>
                     </div>
-                    <div>
-                        <input type="text" value={jiraProjectKey} onChange={e => setJiraProjectKey(e.target.value.toUpperCase())} placeholder={t('jiraProjectKey')} className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-                        <p className="text-xs text-gray-500 mt-1">{t('jiraProjectKeyHelp')}</p>
+                     <div>
+                        <input type="text" value={jiraProjectKey} onChange={e => setJiraProjectKey(e.target.value.toUpperCase())} placeholder={t('jiraProjectKey')} className={inputClasses} />
+                        <p className={helpTextClasses}>{t('jiraProjectKeyHelp')}</p>
                     </div>
                     <div className="flex items-center gap-4 pt-2">
                          <button
                             type="submit"
-                            className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-colors"
+                            className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-blue-500 transition-colors"
                         >
                             {t('saveJiraConfig')}
                         </button>
@@ -224,7 +229,7 @@ const SettingsPage: React.FC = () => {
                             type="button"
                             onClick={handleTestJiraConnection}
                             disabled={isTestingJira}
-                            className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-wait"
+                            className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-slate-600 rounded-md hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-wait"
                         >
                             {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
                         </button>
@@ -237,15 +242,15 @@ const SettingsPage: React.FC = () => {
             </div>
         </div>
 
-        <hr className="border-gray-700"/>
+        <hr className="border-slate-700"/>
 
         {/* Data Management */}
-        <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
-            <h2 className="text-xl font-semibold text-red-400">{t('dataManagementTitle')}</h2>
-            <p className="text-gray-400 mt-1 mb-4">{t('clearDataDescription')}</p>
+        <div className={cardClasses}>
+            <h2 className="text-xl font-semibold text-rose-400">{t('dataManagementTitle')}</h2>
+            <p className="text-slate-400 mt-1 mb-4">{t('clearDataDescription')}</p>
             <button
                 onClick={handleClearData}
-                className="px-5 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500 transition-colors"
+                className="px-5 py-2 text-sm font-semibold text-white bg-rose-600 rounded-md hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-red-500 transition-colors"
             >
                 {t('clearDataButton')}
             </button>
