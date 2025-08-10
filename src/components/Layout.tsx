@@ -18,12 +18,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activePage, onNavigate }) => 
     return (
         <div className="flex min-h-screen bg-gray-900 text-gray-100 font-sans">
             <Sidebar activePage={activePage} onNavigate={onNavigate} userProgress={userProgress} />
-            <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto relative flex flex-col">
-                <div className="max-w-7xl mx-auto w-full flex-grow">
-                    {children}
-                </div>
-                <Footer />
-            </main>
+            <div className="flex-1 flex flex-col">
+                 <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto relative pb-48">
+                    <div className="max-w-7xl mx-auto w-full flex-grow">
+                        {children}
+                    </div>
+                </main>
+            </div>
+             <Footer />
              <ToastContainer />
         </div>
     );
