@@ -63,9 +63,11 @@ export const searchJiraIssues = async (config: JiraConfig, searchTerm: string): 
     const sanitizedSearchTerm = searchTerm.replace(/"/g, '\\"').trim();
     if (!sanitizedSearchTerm) return [];
 
-    let jql = `summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm.toUpperCase()}"`;
+    // JQL for text search (~ operator) requires double quotes.
+    // For exact matches (= operator), single quotes are safer to avoid escaping issues.
+    let jql = `summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = '${sanitizedSearchTerm.toUpperCase()}'`;
     if (config.projectKey) {
-        jql = `project = "${config.projectKey.toUpperCase()}" AND (${jql})`;
+        jql = `project = '${config.projectKey.toUpperCase()}' AND (${jql})`;
     }
     jql += ` ORDER BY updated DESC`;
 
