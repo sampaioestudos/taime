@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Task } from '../types';
 import { formatTime } from '../utils/time';
-import { PlayIcon, PauseIcon, EditIcon, TrashIcon, JiraIcon } from './icons';
+import { PlayIcon, PauseIcon, EditIcon, TrashIcon, JiraIcon, CalendarIcon, CheckCircleIcon } from './icons';
 import { useTranslation } from '../i18n';
 
 interface TaskItemProps {
@@ -11,9 +11,11 @@ interface TaskItemProps {
   onEditTask: (taskId:string, newName: string, newDescription?: string, newJiraIssueKey?: string) => void;
   onDeleteTask: (taskId: string) => void;
   onLogTimeToJira: (taskId: string) => void;
+  onSyncToCalendar: (taskId: string) => void;
+  isSyncing: boolean;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEditTask, onDeleteTask, onLogTimeToJira }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEditTask, onDeleteTask, onLogTimeToJira, onSyncToCalendar, isSyncing }) => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(task.name);
@@ -42,6 +44,11 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
     e.stopPropagation();
     onLogTimeToJira(task.id);
   }
+
+  const handleSyncClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onSyncToCalendar(task.id);
+  };
 
   const handleSave = (e: React.MouseEvent | React.FormEvent) => {
     e.stopPropagation();
@@ -128,6 +135,17 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
                 <button onClick={handleLogJiraClick} className="p-1 text-blue-400 hover:text-white" aria-label={t('jiraLogWork')}>
                     <JiraIcon className="h-4 w-4" />
                 </button>
+            )}
+            {task.syncedToCalendar ? (
+              <span className="p-1 text-green-400 flex items-center gap-1 text-xs" aria-label={t('synced')}>
+                  <CheckCircleIcon className="h-4 w-4" />
+              </span>
+            ) : (
+              task.elapsedSeconds > 0 && (
+                    <button onClick={handleSyncClick} disabled={isSyncing} className="p-1 text-purple-400 hover:text-white disabled:cursor-wait disabled:opacity-50" aria-label={isSyncing ? t('syncing') : t('syncToCalendar')}>
+                        {isSyncing ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> : <CalendarIcon className="h-4 w-4" />}
+                    </button>
+              )
             )}
            <button onClick={handleEditClick} className="p-1 text-gray-400 hover:text-white" aria-label={t('editTask')}>
              <EditIcon className="h-4 w-4" />

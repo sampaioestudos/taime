@@ -1,10 +1,8 @@
 import { Task } from '../types';
 
-// This function assumes the GAPI client is loaded and the user is authenticated.
-// In a real app, you would pass the gapi object or handle auth state here.
-export const createCalendarEvent = async (task: Task) => {
-    if (!window.gapi || !window.gapi.client.calendar) {
-        throw new Error('Google Calendar API not loaded.');
+export const createCalendarEvent = async (task: Task, gapi: any) => {
+    if (!gapi || !gapi.client.calendar) {
+        throw new Error('Google Calendar API client not available.');
     }
 
     if (!task.completionDate) {
@@ -28,7 +26,7 @@ export const createCalendarEvent = async (task: Task) => {
     };
 
     try {
-        const request = window.gapi.client.calendar.events.insert({
+        const request = gapi.client.calendar.events.insert({
             'calendarId': 'primary',
             'resource': event,
         });

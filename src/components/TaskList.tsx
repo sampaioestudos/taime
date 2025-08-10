@@ -12,9 +12,11 @@ interface TaskListProps {
   onEditTask: (taskId: string, newName: string, newDescription?: string, newJiraIssueKey?: string) => void;
   onDeleteTask: (taskId: string) => void;
   onLogTimeToJira: (taskId: string) => void;
+  onSyncToCalendar: (taskId: string) => void;
+  syncingTaskId: string | null;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, onEditTask, onDeleteTask, onLogTimeToJira }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, onEditTask, onDeleteTask, onLogTimeToJira, onSyncToCalendar, syncingTaskId }) => {
   const { t } = useTranslation();
 
   if (tasks.length === 0) {
@@ -36,6 +38,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, activeTaskId, o
           onEditTask={onEditTask}
           onDeleteTask={onDeleteTask}
           onLogTimeToJira={onLogTimeToJira}
+          onSyncToCalendar={onSyncToCalendar}
+          isSyncing={task.id === syncingTaskId}
         />
       ))}
     </div>

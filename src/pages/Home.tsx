@@ -17,14 +17,22 @@ import ExportImportModal from '../components/ExportImportModal';
 import { exportToCsv, exportToJson, mergeImportedHistory } from '../utils/exportImportService';
 import { useToast } from '../components/Toast';
 import { logWorkToJira, searchJiraIssues } from '../services/jiraService';
+import { createCalendarEvent } from '../services/calendarService';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 
 const HomePage: React.FC = () => {
   const [tasks, setTasks] = useLocalStorage<Task[]>('taime-tasks', []);
   const [history, setHistory] = useLocalStorage<History>('taime-history', {});
-  const [goal, _setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
-  const [_userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
+  const [goal, setGoal] = useLocalStorage<Goal | null>('taime-goal', null);
+  const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('taime-user-progress', { points: 0, level: 1 });
   const [jiraConfig] = useLocalStorage<JiraConfig | null>('taime-jira-config', null);
+
+  // State for controlled TaskInput
+  const [taskName, setTaskName] = useState('');
+  const [isSearchingJira, setIsSearchingJira] = useState(false);
+  const [jiraIssues, setJiraIssues] = useState<JiraIssue[]>([]);
+  const searchDebounceRef = useRef<number | null>(null);
 
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -32,6 +40,7 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { t, language } = useTranslation();
   const addToast = useToast();
+  const { isSignedIn, signIn, gapi } = useGoogleAuth();
 
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isExportImportModalOpen, setIsExportImportModalOpen] = useState(false);
@@ -39,42 +48,8 @@ const HomePage: React.FC = () => {
   const [isAnalyzingHistory, setIsAnalyzingHistory] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   
-  // State for Jira Search
-  const [taskName, setTaskName] = useState('');
-  const [jiraIssueKey, setJiraIssueKey] = useState('');
-  const [jiraIssues, setJiraIssues] = useState<JiraIssue[]>([]);
-  const [isSearchingJira, setIsSearchingJira] = useState(false);
-  const searchTimeoutRef = useRef<number | null>(null);
-
-
   const activeTask = tasks.find(t => t.id === activeTaskId) || null;
   useRealtimeInsights({ activeTask, isEnabled: goal?.realtimeInsightsEnabled ?? false });
-
-  // Debounced Jira Search Effect
-  useEffect(() => {
-    if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-    }
-
-    if (taskName.length > 1 && jiraConfig) {
-        setIsSearchingJira(true);
-        searchTimeoutRef.current = window.setTimeout(async () => {
-            const results = await searchJiraIssues(jiraConfig, taskName, jiraConfig.projectKey);
-            setJiraIssues(results);
-            setIsSearchingJira(false);
-        }, 500); // 500ms debounce
-    } else {
-        setJiraIssues([]);
-        setIsSearchingJira(false);
-    }
-    
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, [taskName, jiraConfig]);
-
   
   useEffect(() => {
     let interval: number | null = null;
@@ -97,21 +72,70 @@ const HomePage: React.FC = () => {
   }, [activeTaskId, setTasks]);
 
   const handleAddTask = () => {
-    if (taskName.trim() === '') return;
+    const trimmedName = taskName.trim();
+    if (trimmedName === '') return;
+
+    // e.g. "PROJ-123: Fix the login button"
+    const jiraKeyRegex = /^([A-Z][A-Z0-9]+-\d+):?\s*/;
+    const match = trimmedName.match(jiraKeyRegex);
+    
+    let finalTaskName = trimmedName;
+    let jiraIssueKey: string | undefined = undefined;
+    
+    if (match) {
+        jiraIssueKey = match[1];
+        finalTaskName = trimmedName.replace(jiraKeyRegex, '').trim();
+        if (!finalTaskName) {
+            finalTaskName = jiraIssueKey;
+        }
+    }
+
     const newTask: Task = {
       id: crypto.randomUUID(),
-      name: taskName.trim(),
+      name: finalTaskName,
       description: '',
       elapsedSeconds: 0,
       syncedToCalendar: false,
-      jiraIssueKey: jiraIssueKey.trim() || undefined,
+      jiraIssueKey: jiraIssueKey,
       timeLoggedToJiraSeconds: 0,
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
     setTaskName('');
-    setJiraIssueKey('');
     setJiraIssues([]);
   };
+
+   const handleTaskNameChange = (name: string) => {
+    setTaskName(name);
+    if (searchDebounceRef.current) {
+        window.clearTimeout(searchDebounceRef.current);
+    }
+
+    const hasSelectedIssue = /^[A-Z][A-Z0-9]+-\d+:/.test(name);
+    if (!jiraConfig || name.length < 2 || hasSelectedIssue) {
+        setJiraIssues([]);
+        setIsSearchingJira(false);
+        return;
+    }
+
+    setIsSearchingJira(true);
+    searchDebounceRef.current = window.setTimeout(async () => {
+        try {
+            const issues = await searchJiraIssues(jiraConfig, name, jiraConfig.projectKey);
+            setJiraIssues(issues);
+        } catch (error) {
+            console.error("Jira search failed:", error);
+            setJiraIssues([]);
+        } finally {
+            setIsSearchingJira(false);
+        }
+    }, 500);
+  };
+  
+  const handleSelectIssue = (issue: JiraIssue) => {
+    setTaskName(`${issue.key}: ${issue.summary}`);
+    setJiraIssues([]);
+  };
+
 
   const handleTaskClick = (taskId: string) => {
     setActiveTaskId(prevActiveTaskId => (prevActiveTaskId === taskId ? null : taskId));
@@ -180,6 +204,41 @@ const HomePage: React.FC = () => {
     }
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
   };
+
+  const [syncingTaskId, setSyncingTaskId] = useState<string | null>(null);
+    
+  const handleSyncToCalendar = useCallback(async (taskId: string) => {
+      if (!isSignedIn || !gapi) {
+          addToast(t('googleConnectFirst'), 'info');
+          signIn(); // Prompt user to sign in
+          return;
+      }
+
+      const taskToSync = tasks.find(t => t.id === taskId);
+      if (!taskToSync) return;
+
+      setSyncingTaskId(taskId);
+
+      try {
+          const taskWithCompletion = {
+              ...taskToSync,
+              completionDate: taskToSync.completionDate || new Date().toISOString(),
+          };
+
+          await createCalendarEvent(taskWithCompletion, gapi);
+          
+          setTasks(prev => prev.map(t => 
+              t.id === taskId ? { ...t, syncedToCalendar: true, completionDate: taskWithCompletion.completionDate } : t
+          ));
+          addToast(t('syncSuccess'), 'success');
+
+      } catch (error) {
+          console.error("Failed to sync to calendar:", error);
+          addToast(t('syncError'), 'error');
+      } finally {
+          setSyncingTaskId(null);
+      }
+  }, [isSignedIn, gapi, tasks, signIn, addToast, t, setTasks]);
 
   const handleLogTimeToJira = useCallback(async (taskId: string) => {
       const task = tasks.find(t => t.id === taskId);
@@ -288,20 +347,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleTaskNameChange = (name: string) => {
-      setTaskName(name);
-      // If user types something different from selected issue summary, clear the key
-      if (jiraIssueKey) {
-          setJiraIssueKey('');
-      }
-  };
-
-  const handleSelectIssue = (issue: JiraIssue) => {
-      setTaskName(issue.summary);
-      setJiraIssueKey(issue.key);
-      setJiraIssues([]);
-  };
-
   const todayISO = getTodayISOString();
   const historicalTasksToday = history[todayISO]?.tasks || [];
   const allTasksForTodayCount = historicalTasksToday.length + tasks.filter(t => t.elapsedSeconds > 0).length;
@@ -333,7 +378,7 @@ const HomePage: React.FC = () => {
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
-            <TaskInput 
+            <TaskInput
               taskName={taskName}
               onTaskNameChange={handleTaskNameChange}
               onAddTask={handleAddTask}
@@ -348,6 +393,8 @@ const HomePage: React.FC = () => {
               onEditTask={handleEditTask}
               onDeleteTask={handleDeleteTask}
               onLogTimeToJira={handleLogTimeToJira}
+              onSyncToCalendar={handleSyncToCalendar}
+              syncingTaskId={syncingTaskId}
             />
           </div>
 
