@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -23,16 +23,23 @@ export const useGoogleAuth = () => {
     const [tokenClient, setTokenClient] = useState<any>(null);
     const [isSignedIn, setIsSignedIn] = useLocalStorage('taime-gauth-signedin', false);
     const [userProfile, setUserProfile] = useLocalStorage<UserProfile | null>('taime-gauth-profile', null);
+    
+    const initInProgress = useRef(false);
 
     const initializeGapiClient = useCallback(async () => {
-        await window.gapi.client.init({
-            apiKey: GOOGLE_API_KEY,
-            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-        });
-        setGapi(window.gapi);
+        try {
+            await window.gapi.client.init({
+                apiKey: GOOGLE_API_KEY,
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+            });
+            setGapi(window.gapi);
+        } catch (error) {
+            console.error("Error initializing Google API client:", error);
+        }
     }, []);
 
     const initializeTokenClient = useCallback(() => {
+        if (!window.google || !window.google.accounts) return;
         const client = window.google.accounts.oauth2.initTokenClient({
             client_id: GOOGLE_CLIENT_ID,
             scope: SCOPES,
@@ -40,10 +47,8 @@ export const useGoogleAuth = () => {
                 if (tokenResponse && tokenResponse.access_token) {
                     setIsSignedIn(true);
                     
-                    // The gapi client needs the token to be set to make authorized calls
                     window.gapi.client.setToken(tokenResponse);
                     
-                    // Fetch user profile info
                     try {
                         const profileResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                             headers: { 'Authorization': `Bearer ${tokenResponse.access_token}` }
@@ -51,9 +56,15 @@ export const useGoogleAuth = () => {
                         if (profileResponse.ok) {
                             const profile = await profileResponse.json();
                             setUserProfile({ email: profile.email, name: profile.name, picture: profile.picture });
+                        } else {
+                             console.error("Error fetching user profile:", profileResponse.statusText);
+                             setIsSignedIn(false);
+                             setUserProfile(null);
                         }
                     } catch (error) {
                         console.error("Error fetching user profile:", error);
+                        setIsSignedIn(false);
+                        setUserProfile(null);
                     }
                 }
             },
@@ -67,12 +78,14 @@ export const useGoogleAuth = () => {
             return;
         }
 
+        if (initInProgress.current) return;
+        initInProgress.current = true;
+
         const checkScripts = () => {
             if (window.gapi && window.google) {
                 window.gapi.load('client', initializeGapiClient);
                 initializeTokenClient();
             } else {
-                // If scripts aren't loaded, check again shortly.
                 setTimeout(checkScripts, 100);
             }
         };
@@ -82,7 +95,7 @@ export const useGoogleAuth = () => {
 
     const signIn = () => {
         if (tokenClient) {
-            tokenClient.requestAccessToken({ prompt: 'consent' });
+            tokenClient.requestAccessToken({ prompt: '' });
         } else {
             console.error("Google Auth client not initialized.");
         }
