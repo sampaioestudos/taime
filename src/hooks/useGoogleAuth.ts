@@ -75,7 +75,7 @@ export const useGoogleAuth = () => {
         script.onload = () => {
             gisLoaded.current = true;
             try {
-                const client = window.google.accounts.oauth2.initTokenClient({
+                const client = window.google!.accounts.oauth2.initTokenClient({
                     client_id: GOOGLE_CLIENT_ID,
                     scope: SCOPES,
                     callback: (tokenResponse: any) => {
