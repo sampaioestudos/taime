@@ -97,7 +97,7 @@ export const searchJiraIssues = async (
   // Sanitize search term for JQL
   const sanitizedSearchTerm = searchTerm.replace(/"/g, '\\"');
 
-  let jql = `(summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm}")`;
+  let jql = `(summary ~ "${sanitizedSearchTerm}*" OR description ~ "${sanitizedSearchTerm}*" OR key = "${sanitizedSearchTerm.toUpperCase()}")`;
   
   if (projectKey) {
     jql += ` AND project = "${projectKey.toUpperCase()}"`;

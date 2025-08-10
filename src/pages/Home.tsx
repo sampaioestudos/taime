@@ -6,7 +6,7 @@ import Report from '../components/Report';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import WeeklyHistory from '../components/WeeklyHistory';
 import Modal from '../components/Modal';
-import { getTaskAnalysis } from '../services/geminiService';
+import { getTaskAnalysis, getRealtimeInsight } from '../services/geminiService';
 import { getTodayISOString } from '../utils/date';
 import { BrainCircuitIcon, ExportIcon } from '../components/icons';
 import { useTranslation } from '../i18n';
@@ -47,6 +47,7 @@ const HomePage: React.FC = () => {
   const [historicalAnalysis, setHistoricalAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzingHistory, setIsAnalyzingHistory] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [syncingTaskId, setSyncingTaskId] = useState<string | null>(null);
   
   const activeTask = tasks.find(t => t.id === activeTaskId) || null;
   useRealtimeInsights({ activeTask, isEnabled: goal?.realtimeInsightsEnabled ?? false });
@@ -204,8 +205,6 @@ const HomePage: React.FC = () => {
     }
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
   };
-
-  const [syncingTaskId, setSyncingTaskId] = useState<string | null>(null);
     
   const handleSyncToCalendar = useCallback(async (taskId: string) => {
       if (!isSignedIn || !gapi) {

@@ -56,7 +56,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
     <div className="space-y-8 animate-fade-in">
       <div>
         <h3 className="text-lg font-semibold text-white mb-2">{t('reportChartTitle')}</h3>
-        <div className="h-96 w-full bg-gray-800 rounded-lg p-2 sm:p-4 flex flex-col">
+        <div className="h-80 w-full bg-gray-800 rounded-lg p-2 sm:p-4 flex flex-col">
            <ResponsiveContainer width="100%" height="70%">
             <PieChart>
               <Pie
@@ -64,8 +64,8 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={75}
-                innerRadius={40}
+                outerRadius={80}
+                innerRadius={45}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
@@ -77,7 +77,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
               <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700 !border-gray-600 rounded-md" />
             </PieChart>
           </ResponsiveContainer>
-          <div className="flex-grow flex flex-wrap justify-center items-center content-center gap-x-4 gap-y-2 mt-2">
+          <div className="flex-grow flex flex-wrap justify-center items-center content-center gap-x-4 gap-y-2 mt-2 px-2">
             {chartData.map((entry, index) => (
               <div key={`legend-${index}`} className="flex items-center text-xs text-gray-300">
                 <span className="w-3 h-3 rounded-sm mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
@@ -88,19 +88,21 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
         </div>
       </div>
       
-      <div>
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <LightBulbIcon className="h-6 w-6 text-yellow-400"/>
-            {t('reportInsightsTitle')}
-        </h3>
-        <ul className="space-y-2">
-          {analysisResult.insights.map((insight, index) => (
-            <li key={index} className="bg-gray-800 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
-              {insight}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {analysisResult.insights.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <LightBulbIcon className="h-6 w-6 text-yellow-400"/>
+                {t('reportInsightsTitle')}
+            </h3>
+            <ul className="space-y-2">
+            {analysisResult.insights.map((insight, index) => (
+                <li key={index} className="bg-gray-800 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
+                {insight}
+                </li>
+            ))}
+            </ul>
+        </div>
+      )}
 
        <div>
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportCategoriesTitle')}</h3>
