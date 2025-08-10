@@ -80,6 +80,12 @@ This project is optimized for deployment on [Vercel](https://vercel.com/).
 
 ---
 
+## SEO & Routing
+
+The application uses URL query parameters for navigation (e.g., `/?page=settings`) rather than path-based routing. This approach was chosen to ensure deep linking and full crawlability by search engines within a single-page application (SPA) framework, while keeping the deployment simple (no complex server-side routing rules needed). Page titles and meta descriptions are dynamically updated for each page to maximize SEO effectiveness.
+
+---
+
 ## Integrations
 
 ### Gemini API (Required)
@@ -108,7 +114,7 @@ Sync your completed tasks directly to your Google Calendar.
     *   Click "Create Credentials" and select "OAuth client ID".
     *   Configure the consent screen (choose "External" and provide required info).
     *   Select "Web application" as the application type.
-    *   Under "Authorized JavaScript origins", add your local and deployed URLs (e.g., `http://localhost:5173` and your Vercel URL).
+    *   Under "Authorized JavaScript origins", add your local and deployed URLs (e.g., `http://localhost:5173` and `https://www.taime.online`).
     *   Click "Create". You will be given a **Client ID** and a standard **API Key** (if you don't have one).
 
 4.  **Set Up the App:**

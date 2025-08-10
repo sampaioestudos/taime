@@ -1,6 +1,6 @@
 {
-  "name": "Backup of taime",
-  "description": "An intelligent time management app that allows users to track time spent on individual tasks. It uses AI to categorize tasks and provide productivity insights.",
+  "name": "taime",
+  "description": "Boost your productivity with taime, the intelligent time management app. Use AI-powered analysis ('gestão de tempo com IA'), gamified tracking ('produtividade gamificada'), and seamless Jira integration. Perfect for focus and deep work.",
   "requestFramePermissions": [],
   "prompt": ""
 }

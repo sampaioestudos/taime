@@ -127,6 +127,7 @@ export const AlertTriangleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props
     </svg>
 );
 
+
 export const JiraIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M12.54 12.3L7.65 7.4a.79.79 0 0 0-1.11 0L2.4 11.54a.78.78 0 0 0 0 1.11l4.14 4.14a.79.79 0 0 0 1.11 0l3.78-3.78a.8.8 0 0 1 1.11 0l4.89 4.89a.79.79 0 0 0 1.11 0l4.14-4.14a.78.78 0 0 0 0-1.11l-4.89-4.89a.8.8 0 0 0-1.11 0Z"/>

@@ -18,12 +18,12 @@ interface ToastContextType {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> = ({ toast, onDismiss }) => {
-  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 text-white rounded-lg shadow-lg transition-all transform";
+  const baseClasses = "flex items-center gap-4 w-full max-w-sm p-4 text-white rounded-lg shadow-lg ring-1 ring-white/10 transition-all transform backdrop-blur-sm";
   
   const typeClasses = {
-    info: 'bg-slate-800/80',
-    success: 'bg-green-700/80',
-    error: 'bg-red-700/80',
+    info: 'bg-slate-800/90',
+    success: 'bg-green-700/90',
+    error: 'bg-red-700/90',
   };
   
   const icons = {
@@ -33,7 +33,7 @@ const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> 
   }
 
   return (
-    <div className={`${baseClasses} ${typeClasses[toast.type]} animate-fade-in-right glassmorphism`}>
+    <div className={`${baseClasses} ${typeClasses[toast.type]} animate-fade-in-right`}>
       <div className="shrink-0">{icons[toast.type]}</div>
       <div className="flex-1 text-sm font-medium">{toast.message}</div>
       <button onClick={() => onDismiss(toast.id)} className="p-1 text-gray-400 hover:text-white rounded-full">
@@ -78,7 +78,7 @@ export const ToastContainer: React.FC = () => {
     const { toasts, removeToast } = context;
 
     return (
-        <div className="fixed bottom-5 right-5 z-[100] space-y-3 w-full max-w-sm">
+        <div className="fixed bottom-5 right-5 z-50 space-y-3 w-full max-w-sm">
             {toasts.map(toast => (
                 <Toast key={toast.id} toast={toast} onDismiss={removeToast} />
             ))}

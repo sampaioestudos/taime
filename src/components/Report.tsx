@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { AnalysisResult } from '../types';
@@ -23,7 +24,6 @@ const EmptyState: React.FC<{ totalTasksTodayCount: number }> = ({ totalTasksToda
     const { t } = useTranslation();
     return (
         <div className="text-center p-8 border-2 border-dashed border-gray-700 rounded-lg flex flex-col justify-center items-center min-h-[300px]">
-            <BrainCircuitIcon className="h-10 w-10 text-cyan-500 mb-4"/>
             <h3 className="text-lg font-semibold text-white">{t('reportEmptyTitle')}</h3>
             {totalTasksTodayCount > 0 ? (
                 <p className="text-gray-400 mt-2 max-w-sm">{t('reportEmptyBodyWithTasks')}</p>
@@ -73,7 +73,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
       {analysisResult.categories.length > 0 && (
         <div>
             <h3 className="text-lg font-semibold text-white mb-2">{t('reportChartTitle')}</h3>
-            <div className="h-80 w-full glassmorphism p-2 sm:p-4 flex flex-col">
+            <div className="h-80 w-full bg-gray-800 rounded-lg p-2 sm:p-4 flex flex-col">
             <ResponsiveContainer width="100%" height="70%">
                 <PieChart>
                 <Pie
@@ -91,7 +91,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700/80 !border-gray-600 rounded-md !backdrop-blur-sm" />
+                <Tooltip formatter={(value: number) => [formatTime(value), t('reportChartTooltipLabel')]} wrapperClassName="!bg-gray-700 !border-gray-600 rounded-md" />
                 </PieChart>
             </ResponsiveContainer>
             <div className="flex-grow flex flex-wrap justify-center items-center content-center gap-x-4 gap-y-2 mt-2 px-2">
@@ -114,7 +114,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
             </h3>
             <ul className="space-y-2">
             {analysisResult.insights.map((insight, index) => (
-                <li key={index} className="glassmorphism p-3 text-gray-300 border-l-4 border-cyan-500">
+                <li key={index} className="bg-gray-800 p-3 rounded-md text-gray-300 border-l-4 border-cyan-500">
                 {insight}
                 </li>
             ))}
@@ -127,7 +127,7 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
             <h3 className="text-lg font-semibold text-white mb-4">{t('reportCategoriesTitle')}</h3>
             <div className="space-y-4">
             {analysisResult.categories.map((category, index) => (
-                <div key={index} className="glassmorphism p-4">
+                <div key={index} className="bg-gray-800 p-4 rounded-lg">
                     <div className="flex justify-between items-baseline mb-2">
                         <h4 className="font-semibold text-cyan-400">{category.categoryName}</h4>
                         <span className="text-sm font-mono text-gray-400">{formatTime(category.totalTime)}</span>

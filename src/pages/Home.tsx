@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
 import TaskInput from '../components/TaskInput';
@@ -135,7 +136,6 @@ const HomePage: React.FC = () => {
   const handleSelectIssue = (issue: JiraIssue) => {
     setTaskName(`${issue.key}: ${issue.summary}`);
     setJiraIssues([]);
-    // Focus input after selection could be a good UX improvement if we had the input ref
   };
 
 
@@ -353,15 +353,14 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <header className="flex flex-wrap justify-between items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl tracking-tight text-white leading-tight">{t('manageTasks')}</h1>
-            <p className="text-sm text-gray-400">{t('appSlogan')}</p>
+      <header className="flex justify-between items-center mb-8 gap-4">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">{t('manageTasks')}</h1>
           </div>
            <div className="flex items-center gap-2 sm:gap-4">
             <button
                 onClick={() => setIsExportImportModalOpen(true)}
-                className="p-2 text-gray-300 bg-gray-800/50 rounded-md hover:bg-gray-700/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
+                className="p-2 text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
                 aria-label={t('exportImportButton')}
               >
                 <ExportIcon className="h-5 w-5"/>
@@ -369,7 +368,7 @@ const HomePage: React.FC = () => {
             <LanguageSwitcher />
             <button
               onClick={handleResetDay}
-              className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 rounded-md hover:bg-gray-700/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-colors"
             >
               {t('resetDay')}
             </button>
@@ -377,7 +376,7 @@ const HomePage: React.FC = () => {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="glassmorphism p-6">
+          <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">{t('manageTasks')}</h2>
             <TaskInput
               taskName={taskName}
@@ -400,7 +399,7 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-8">
-            <div className="glassmorphism p-6">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-semibold text-cyan-400">{t('productivityAnalysis')}</h2>
                 <button
@@ -416,7 +415,7 @@ const HomePage: React.FC = () => {
               <Report analysisResult={analysisResult} isLoading={isAnalyzing} totalTasksTodayCount={allTasksForTodayCount} />
             </div>
 
-            <div className="glassmorphism p-6">
+            <div className="bg-gray-800/50 p-6 rounded-xl shadow-lg ring-1 ring-white/10">
               <WeeklyHistory
                 history={history}
                 goal={goal}
@@ -429,7 +428,7 @@ const HomePage: React.FC = () => {
 
         <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)}>
         <div className="p-1">
-          <h2 className="text-xl mb-4">
+          <h2 className="text-xl font-bold text-white mb-4">
             {t('analysisForDate', { date: selectedDate || '' })}
           </h2>
           <Report

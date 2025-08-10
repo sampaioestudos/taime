@@ -1,54 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --primary-hue: 200; /* Cyan */
-    --secondary-hue: 260; /* Purple */
-    --accent-hue: 330; /* Pink */
-    
-    --primary: hsl(var(--primary-hue), 85%, 55%);
-    --secondary: hsl(var(--secondary-hue), 80%, 65%);
-    --accent: hsl(var(--accent-hue), 80%, 60%);
-    
-    --glass-bg: hsla(220, 13%, 18%, 0.6); /* slate-800 with alpha */
-    --glass-ring: hsla(0, 0%, 100%, 0.1);
-  }
-
   body {
     @apply bg-slate-950 text-slate-300;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #020617; /* bg-slate-950 */
-    overflow: hidden; /* Hide body scrollbar to use the one in Layout */
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(-45deg, hsl(220, 20%, 10%), hsl(260, 25%, 12%), hsl(220, 20%, 10%), hsl(200, 30%, 15%));
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-    z-index: -1;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-slate-100;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-  }
-}
-
-@layer utilities {
-  .glassmorphism {
-    @apply bg-[var(--glass-bg)] rounded-xl shadow-lg ring-1 ring-[var(--glass-ring)];
-    backdrop-filter: blur(16px);
   }
 }
 
@@ -58,14 +19,14 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #020617; /* bg-slate-950 */
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary-hue), 15%, 50%);
+  background: #475569; /* bg-slate-600 */
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary-hue), 15%, 60%);
+  background: #64748b; /* bg-slate-500 */
 }
 
 /* Hide arrows from number inputs */
@@ -79,12 +40,6 @@ input[type=number] {
 }
 
 /* Animations */
-@keyframes gradientShift {
-	0% { background-position: 0% 50%; }
-	50% { background-position: 100% 50%; }
-	100% { background-position: 0% 50%; }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px)}
   to { opacity: 1; transform: translateY(0)}
@@ -115,13 +70,17 @@ input[type=number] {
   animation: fadeInRight 0.3s ease-in-out;
 }
 
-/* Custom fix for browser autofill styles */
+/* Custom fix for browser autofill styles to ensure text is readable */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* bg-slate-800 */
-    -webkit-text-fill-color: #e2e8f0 !important; /* slate-200 */
-    caret-color: #e2e8f0;
+    /* Remove the problematic box-shadow hack that tried to force a dark background */
+    -webkit-box-shadow: none !important;
+
+    /* Set text color to a dark value for visibility on the browser's default light autofill background. */
+    -webkit-text-fill-color: #0f172a !important; /* slate-900 */
+    
+    /* This transition hack helps prevent the browser from changing the background color immediately. */
     transition: background-color 9999s ease-in-out 0s;
 }

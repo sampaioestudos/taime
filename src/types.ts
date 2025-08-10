@@ -53,6 +53,5 @@ export interface JiraConfig {
 declare global {
   interface Window {
     gapi: any;
-    google: any;
   }
 }

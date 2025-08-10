@@ -24,7 +24,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onTaskClick, isActive, onEdit
 
 
   const baseClasses = "flex items-center justify-between p-3 rounded-lg transition-all duration-200";
-  const inactiveClasses = "bg-gray-700/60 hover:bg-gray-600/70";
+  const inactiveClasses = "bg-gray-700 hover:bg-gray-600/70";
   const activeClasses = "bg-cyan-600/80 ring-2 ring-cyan-400 shadow-lg";
 
   const handleEditClick = (e: React.MouseEvent) => {

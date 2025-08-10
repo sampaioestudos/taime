@@ -104,13 +104,18 @@ export const translations = {
     clearDataDescription: 'Permanently delete all tracked tasks, history, and progress. This action is irreversible.',
     clearDataConfirm: 'Are you sure you want to delete all app data? This action cannot be undone.',
     dataClearedSuccess: 'All app data has been successfully cleared.',
+    // SEO
+    homePageTitle: 'taime | AI Time Manager & Productivity App',
+    homePageDescription: 'Track your time, get AI-powered productivity insights, and integrate with Jira. Gamify your work and achieve your goals with taime.',
+    settingsPageTitle: 'Settings | taime',
+    settingsPageDescription: 'Customize your taime experience. Set weekly goals, configure Jira and Google Calendar integrations, and manage your data.',
+    metaKeywords: 'AI time management, gamified productivity, Jira pomodoro, gestão de tempo com IA, produtividade gamificada, time tracker, productivity app',
     // Footer
     footerCopyright: "This project is licensed under the GNU General Public License v3.0.",
-    footerGithubLink: "View on GitHub",
-    footerSupportTitle: "Support taime ☕",
-    footerSupportText: "If this tool boosts your productivity, consider supporting its development.",
-    footerPrivacy: "Privacy Policy",
-    footerTerms: "Terms of Use",
+    footerGithubLink: "See the project on GitHub",
+    footerDonationTitle: "Support taime ☕",
+    footerDonationText: "If taime is helping you boost your productivity, consider supporting the project. Your donation helps keep the servers running and the Gemini API working!",
+    footerDonationLink: "Support the project",
   },
   'pt-BR': {
     appSlogan: 'Seu tempo, otimizado com inteligência.',
@@ -217,12 +222,17 @@ export const translations = {
     clearDataDescription: 'Exclua permanentemente todas as tarefas, histórico e progresso. Esta ação é irreversível.',
     clearDataConfirm: 'Tem certeza que deseja apagar todos os dados do aplicativo? Esta ação não pode ser desfeita.',
     dataClearedSuccess: 'Todos os dados do aplicativo foram limpos com sucesso.',
+    // SEO
+    homePageTitle: 'taime | Gestor de Tempo com IA e App de Produtividade',
+    homePageDescription: 'Monitore seu tempo, receba insights de produtividade com IA e integre com o Jira. Gamifique seu trabalho e atinja suas metas com o taime.',
+    settingsPageTitle: 'Configurações | taime',
+    settingsPageDescription: 'Personalize sua experiência com o taime. Defina metas semanais, configure integrações com Jira e Google Agenda, e gerencie seus dados.',
+    metaKeywords: 'gestão de tempo com IA, produtividade gamificada, integração Jira com pomodoro, pomodoro, monitor de tempo, app de produtividade',
      // Footer
     footerCopyright: "Este projeto está licenciado sob a Licença Pública Geral GNU v3.0.",
-    footerGithubLink: "Ver no GitHub",
-    footerSupportTitle: "Apoie o taime ☕",
-    footerSupportText: "Se esta ferramenta aumenta sua produtividade, considere apoiar o desenvolvimento.",
-    footerPrivacy: "Política de Privacidade",
-    footerTerms: "Termos de Uso",
+    footerGithubLink: "Veja o projeto no GitHub",
+    footerDonationTitle: "Apoie o taime ☕",
+    footerDonationText: "Se o taime está ajudando a turbinar sua produtividade, considere apoiar o projeto. Sua doação ajuda a manter os servidores e a API do Gemini funcionando!",
+    footerDonationLink: "Apoie o projeto",
   }
 };

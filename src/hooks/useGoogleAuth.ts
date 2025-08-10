@@ -5,6 +5,13 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
+declare global {
+    interface Window {
+        google: any;
+        gapi: any;
+    }
+}
+
 interface UserProfile {
     email: string;
     name: string;
@@ -23,27 +30,7 @@ export const useGoogleAuth = () => {
             discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
         });
         setGapi(window.gapi);
-
-        // If a token exists in gapi, it means we are already signed in from a previous session
-        if (window.gapi.client.getToken() !== null) {
-            setIsSignedIn(true);
-            // Optionally fetch profile if not in local storage
-            if (!userProfile) {
-                try {
-                    const profileResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                        headers: { 'Authorization': `Bearer ${window.gapi.client.getToken().access_token}` }
-                    });
-                    if (profileResponse.ok) {
-                        const profile = await profileResponse.json();
-                        setUserProfile({ email: profile.email, name: profile.name, picture: profile.picture });
-                    }
-                } catch (error) {
-                    console.error("Error fetching user profile on init:", error);
-                }
-            }
-        }
-
-    }, [setUserProfile, setIsSignedIn, userProfile]);
+    }, []);
 
     const initializeTokenClient = useCallback(() => {
         const client = window.google.accounts.oauth2.initTokenClient({
@@ -80,31 +67,22 @@ export const useGoogleAuth = () => {
             return;
         }
 
-        const gapiScript = document.createElement('script');
-        gapiScript.src = 'https://apis.google.com/js/api.js';
-        gapiScript.async = true;
-        gapiScript.defer = true;
-        gapiScript.onload = () => window.gapi.load('client', initializeGapiClient);
-        document.body.appendChild(gapiScript);
-
-        const gsiScript = document.createElement('script');
-        gsiScript.src = 'https://accounts.google.com/gsi/client';
-        gsiScript.async = true;
-        gsiScript.defer = true;
-        gsiScript.onload = initializeTokenClient;
-        document.body.appendChild(gsiScript);
-
-
-        return () => {
-            if (document.body.contains(gapiScript)) document.body.removeChild(gapiScript);
-            if (document.body.contains(gsiScript)) document.body.removeChild(gsiScript);
+        const checkScripts = () => {
+            if (window.gapi && window.google) {
+                window.gapi.load('client', initializeGapiClient);
+                initializeTokenClient();
+            } else {
+                // If scripts aren't loaded, check again shortly.
+                setTimeout(checkScripts, 100);
+            }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        checkScripts();
     }, [initializeGapiClient, initializeTokenClient]);
 
     const signIn = () => {
         if (tokenClient) {
-            tokenClient.requestAccessToken({ prompt: '' });
+            tokenClient.requestAccessToken({ prompt: 'consent' });
         } else {
             console.error("Google Auth client not initialized.");
         }
