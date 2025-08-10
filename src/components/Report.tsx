@@ -57,13 +57,13 @@ const Report: React.FC<ReportProps> = ({ analysisResult, isLoading, totalTasksTo
         <h3 className="text-lg font-semibold text-white mb-4">{t('reportChartTitle')}</h3>
         <div className="h-72 w-full bg-slate-900/70 rounded-lg p-2 sm:p-4">
            <ResponsiveContainer width="100%" height="100%">
-            <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+            <PieChart>
               <Pie
                 data={chartData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={80}
+                outerRadius={70}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"

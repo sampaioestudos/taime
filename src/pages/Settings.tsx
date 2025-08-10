@@ -233,7 +233,7 @@ const SettingsPage: React.FC = () => {
                         >
                             {isTestingJira ? t('jiraTesting') : t('jiraTestConnection')}
                         </button>
-                        <div className="h-6 w-6">
+                        <div className="h-6 w-6 ml-4">
                             {jiraTestStatus === 'success' && <CheckCircleIcon className="h-full w-full text-green-500 animate-fade-in" aria-label={t('jiraTestSuccess')}/>}
                             {jiraTestStatus === 'error' && <XIcon className="h-full w-full text-red-500 animate-fade-in" aria-label={t('jiraTestError')}/>}
                         </div>

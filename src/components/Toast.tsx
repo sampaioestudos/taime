@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { XIcon, LightBulbIcon, CheckCircleIcon } from './icons';
+import { XIcon, LightBulbIcon, CheckCircleIcon, AlertTriangleIcon } from './icons';
 
 type ToastType = 'info' | 'success' | 'error';
 
@@ -29,7 +29,7 @@ const Toast: React.FC<{ toast: ToastMessage; onDismiss: (id: number) => void }> 
   const icons = {
       info: <LightBulbIcon className="h-6 w-6 text-sky-400"/>,
       success: <CheckCircleIcon className="h-6 w-6 text-emerald-400"/>,
-      error: <LightBulbIcon className="h-6 w-6 text-rose-400"/>
+      error: <AlertTriangleIcon className="h-6 w-6 text-rose-400"/>
   }
 
   return (
