@@ -1,6 +1,5 @@
 export const translations = {
   en: {
-    appSlogan: 'Your time, optimized with intelligence.',
     resetDay: 'Reset Day',
     manageTasks: 'Manage Your Tasks',
     addTaskPlaceholder: 'Enter a new task...',
@@ -111,14 +110,15 @@ export const translations = {
     settingsPageDescription: 'Customize your taime experience. Set weekly goals, configure Jira and Google Calendar integrations, and manage your data.',
     metaKeywords: 'AI time management, gamified productivity, Jira pomodoro, gestão de tempo com IA, produtividade gamificada, time tracker, productivity app',
     // Footer
-    footerCopyright: "This project is licensed under the GNU General Public License v3.0.",
+    footerYear: "2025",
+    footerMadeWith: "Made with 💜",
+    footerCopyright: "Copyright: This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.",
     footerGithubLink: "See the project on GitHub",
     footerDonationTitle: "Support taime ☕",
-    footerDonationText: "If taime is helping you boost your productivity, consider supporting the project. Your donation helps keep the servers running and the Gemini API working!",
-    footerDonationLink: "Support the project",
+    footerDonationText: "If taime is helping you tame deadlines and boost your productivity, how about a \"coffee\"? Your donation helps keep the servers running and the Gemini API working!",
+    footerDonationLink: "Click here to support!",
   },
   'pt-BR': {
-    appSlogan: 'Seu tempo, otimizado com inteligência.',
     resetDay: 'Zerar Dia',
     manageTasks: 'Gerencie Suas Tarefas',
     addTaskPlaceholder: 'Digite uma nova tarefa...',
@@ -229,10 +229,12 @@ export const translations = {
     settingsPageDescription: 'Personalize sua experiência com o taime. Defina metas semanais, configure integrações com Jira e Google Agenda, e gerencie seus dados.',
     metaKeywords: 'gestão de tempo com IA, produtividade gamificada, integração Jira com pomodoro, pomodoro, monitor de tempo, app de produtividade',
      // Footer
-    footerCopyright: "Este projeto está licenciado sob a Licença Pública Geral GNU v3.0.",
+    footerYear: "2025",
+    footerMadeWith: "Feito com 💜",
+    footerCopyright: "Copyright: This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.",
     footerGithubLink: "Veja o projeto no GitHub",
     footerDonationTitle: "Apoie o taime ☕",
-    footerDonationText: "Se o taime está ajudando a turbinar sua produtividade, considere apoiar o projeto. Sua doação ajuda a manter os servidores e a API do Gemini funcionando!",
-    footerDonationLink: "Apoie o projeto",
+    footerDonationText: "Se o taime está te ajudando a domar os prazos e turbinar sua produtividade, que tal um \"cafezinho\"? Sua doação ajuda a manter os servidores no ar e a API do Gemini funcionando!",
+    footerDonationLink: "Clique aqui para apoiar!",
   }
 };
