@@ -65,22 +65,19 @@ const App: React.FC = () => {
         window.history.pushState({}, '', url);
     };
 
-    const renderPage = () => {
-        switch (currentPage) {
-            case 'home':
-                return <HomePage />;
-            case 'settings':
-                return <SettingsPage />;
-            // case 'achievements':
-            //     return <AchievementsPage />;
-            default:
-                return <HomePage />;
-        }
-    };
-
     return (
         <Layout activePage={currentPage} onNavigate={handleNavigate}>
-            {renderPage()}
+            {/* The HomePage is always mounted but hidden to keep the timer running. */}
+            <div style={{ display: currentPage === 'home' ? 'block' : 'none' }}>
+                <HomePage />
+            </div>
+
+            {currentPage === 'settings' && <SettingsPage />}
+            
+            {/* 
+            When 'achievements' page is implemented, it can be added here:
+            {currentPage === 'achievements' && <AchievementsPage />} 
+            */}
         </Layout>
     );
 };
