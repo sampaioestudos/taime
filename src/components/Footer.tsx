@@ -17,29 +17,16 @@ const Footer: React.FC = () => {
                 
                 {/* Section 2: GitHub Link */}
                 <div className="flex items-center justify-center">
-                    <a 
-                        href="https://github.com/sampaioestudos/taime" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-cyan-400 hover:text-cyan-300 transition-colors"
-                    >
+                    <p className="text-cyan-400">
                         {t('footerGithubLink')}
-                    </a>
+                    </p>
                 </div>
                 
                 {/* Section 3: Donation Message */}
                 <div className="space-y-2">
                     <p className="font-semibold text-gray-300">{t('footerDonationTitle')}</p>
-                    <p>
+                    <p className="text-cyan-400">
                         {t('footerDonationText')}
-                        <a 
-                            href="https://link.mercadopago.com.br/taimeonline" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-cyan-400 hover:text-cyan-300 transition-colors block mt-2 font-semibold"
-                        >
-                            {t('footerDonationLink')}
-                        </a>
                     </p>
                 </div>
                 
