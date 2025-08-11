@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     const { t } = useTranslation();
 
     return (
-        <footer className="w-full bg-slate-950 text-gray-400 text-xs ring-1 ring-white/10 mt-auto">
+        <footer className="w-full bg-slate-950 text-gray-400 text-xs ring-1 ring-white/10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4 sm:px-6 lg:px-8 py-8">
                 {/* About Section */}
                 <div className="flex flex-col gap-3">
