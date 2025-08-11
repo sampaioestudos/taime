@@ -34,6 +34,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 'Authorization': `Basic ${auth}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                // Add a User-Agent to appear more like a standard browser to Cloudflare
+                'User-Agent': 'taime-app/1.0 (+https://www.taime.online)',
             },
             body: body ? JSON.stringify(body) : undefined,
         });
@@ -48,11 +50,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 responseBody = await jiraResponse.text();
             }
         } catch(e) {
-            responseBody = await jiraResponse.text();
+            // In case of parsing error (e.g., empty body), try to get text
+            responseBody = await jiraResponse.text().catch(() => '');
         }
 
         // Forward headers from Jira response to client
-        res.setHeader('Content-Type', contentType || 'application/json');
+        if (contentType) {
+             res.setHeader('Content-Type', contentType);
+        }
         
         return res.status(jiraResponse.status).send(responseBody);
 

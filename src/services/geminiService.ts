@@ -101,15 +101,15 @@ export const getTaskAnalysis = async (tasks: Task[], language: string): Promise<
 
     const jsonText = response.text;
     if (!jsonText) {
-        throw new Error("Empty JSON response from API.");
+        return { categories: [], insights: [] }; // Return empty valid result
     }
     const result = JSON.parse(jsonText.trim());
     
-    if (!result.categories || !result.insights) {
-        throw new Error("Invalid JSON structure received from API.");
-    }
+    // Ensure the result conforms to the expected structure
+    const categories = result.categories || [];
+    const insights = result.insights || [];
 
-    return result as AnalysisResult;
+    return { categories, insights };
 
   } catch (error) {
     console.error("Error calling Gemini API:", error);

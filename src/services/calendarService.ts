@@ -1,7 +1,7 @@
 import { Task } from '../types';
 
 export const createCalendarEvent = async (task: Task, gapi: any) => {
-    if (!gapi || !gapi.client.calendar) {
+    if (!gapi || !gapi.client || !gapi.client.calendar) {
         throw new Error('Google Calendar API client not available.');
     }
 

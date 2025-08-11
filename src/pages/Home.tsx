@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Task, AnalysisResult, History, DailyRecord, Goal, UserProgress, JiraConfig, JiraIssue } from '../types';
 import TaskInput from '../components/TaskInput';

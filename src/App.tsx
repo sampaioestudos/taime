@@ -17,7 +17,7 @@ const getPageFromQuery = (): Page => {
 
 const App: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<Page>(getPageFromQuery());
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
 
     useEffect(() => {
         const handlePopState = () => {
@@ -46,13 +46,22 @@ const App: React.FC = () => {
         }
         
         document.title = title;
-        document.querySelector('meta[name="description"]')?.setAttribute('content', description);
-        document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
-        document.querySelector('meta[property="og:description"]')?.setAttribute('content', description);
-        document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', title);
-        document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', description);
+        const descriptionTag = document.querySelector('meta[name="description"]');
+        if (descriptionTag) descriptionTag.setAttribute('content', description);
+        
+        const ogTitleTag = document.querySelector('meta[property="og:title"]');
+        if (ogTitleTag) ogTitleTag.setAttribute('content', title);
+        
+        const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
+        if (ogDescriptionTag) ogDescriptionTag.setAttribute('content', description);
 
-    }, [currentPage, t]);
+        const twitterTitleTag = document.querySelector('meta[name="twitter:title"]');
+        if (twitterTitleTag) twitterTitleTag.setAttribute('content', title);
+        
+        const twitterDescriptionTag = document.querySelector('meta[name="twitter:description"]');
+        if (twitterDescriptionTag) twitterDescriptionTag.setAttribute('content', description);
+
+    }, [currentPage, t, language]);
 
     const handleNavigate = (page: Page) => {
         setCurrentPage(page);

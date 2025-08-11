@@ -5,13 +5,6 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
-declare global {
-    interface Window {
-        google: any;
-        gapi: any;
-    }
-}
-
 interface UserProfile {
     email: string;
     name: string;
@@ -33,6 +26,7 @@ export const useGoogleAuth = () => {
     }, []);
 
     const initializeTokenClient = useCallback(() => {
+        if (!window.google || !window.google.accounts) return;
         const client = window.google.accounts.oauth2.initTokenClient({
             client_id: GOOGLE_CLIENT_ID,
             scope: SCOPES,
@@ -67,17 +61,23 @@ export const useGoogleAuth = () => {
             return;
         }
 
-        const checkScripts = () => {
-            if (window.gapi && window.google) {
-                window.gapi.load('client', initializeGapiClient);
-                initializeTokenClient();
-            } else {
-                // If scripts aren't loaded, check again shortly.
-                setTimeout(checkScripts, 100);
+        const gapiScript = document.createElement('script');
+        gapiScript.src = 'https://apis.google.com/js/api.js';
+        gapiScript.async = true;
+        gapiScript.defer = true;
+        gapiScript.onload = () => window.gapi.load('client', initializeGapiClient);
+        document.body.appendChild(gapiScript);
+
+        const gsiScript = document.getElementById('google-gsi-client');
+        if (gsiScript) {
+             gsiScript.onload = () => initializeTokenClient();
+        }
+
+        return () => {
+            if (document.body.contains(gapiScript)) {
+                document.body.removeChild(gapiScript);
             }
         };
-
-        checkScripts();
     }, [initializeGapiClient, initializeTokenClient]);
 
     const signIn = () => {
@@ -85,6 +85,8 @@ export const useGoogleAuth = () => {
             tokenClient.requestAccessToken({ prompt: 'consent' });
         } else {
             console.error("Google Auth client not initialized.");
+            // try to initialize again
+            initializeTokenClient();
         }
     };
 

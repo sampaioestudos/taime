@@ -100,8 +100,8 @@ const SettingsPage: React.FC = () => {
     if (isNaN(value) || value < 0) {
         value = 0;
     }
-    if (value > 60) {
-        value = 60;
+    if (value > 168) { // Max hours in a week
+        value = 168;
     }
     setHours(value);
   }
@@ -111,6 +111,12 @@ const SettingsPage: React.FC = () => {
         setHistory({});
         setTasks([]);
         setUserProgress({ points: 0, level: 1 });
+        setJiraConfig(null);
+        setGoal({ weeklyHours: 0, realtimeInsightsEnabled: false });
+        // Optionally sign out from Google as well
+        if (isSignedIn) {
+            signOut();
+        }
         addToast(t('dataClearedSuccess'), 'success');
     }
   };
@@ -136,7 +142,7 @@ const SettingsPage: React.FC = () => {
                   value={hours}
                   onChange={handleHoursChange}
                   min="0"
-                  max="60"
+                  max="168"
                   className="w-24 bg-gray-700 text-gray-200 text-center border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   aria-label={t('hoursPerWeek')}
                 />

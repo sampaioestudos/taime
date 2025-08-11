@@ -43,7 +43,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
             autoComplete="off"
           />
           {(isSearching || jiraIssues.length > 0) && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto animate-fade-in-fast">
               {isSearching ? (
                 <div className="px-4 py-2 text-gray-400">{t('searchingIssues')}</div>
               ) : (
