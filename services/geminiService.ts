@@ -2,11 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Task, AnalysisResult } from '../types';
 import { formatTime } from "../utils/time";
 
-if (!process.env.API_KEY) {
-    console.error("API_KEY environment variable not set.");
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 const analysisSchema = {
   type: Type.OBJECT,
